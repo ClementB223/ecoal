@@ -18,16 +18,18 @@ export default function Navbar() {
     try {
       const me = await getMe();
       setUser(me);
-    } catch (error) {
+    } catch {
       setUser(null);
     }
   };
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (token) {
-      loadUser();
-    }
+    if (!token) return;
+
+    getMe()
+      .then((me) => setUser(me))
+      .catch(() => setUser(null));
   }, []);
 
   return (

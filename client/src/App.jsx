@@ -1,13 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Route, Routes, useNavigate } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './App.css';
 import Navbar from './components/Navbar';
-import FossilCard from './components/FossilCard';
-import headerImage from './assets/imgheader.png';
 import LoginModal from './pages/Login';
 import Register from './pages/Register';
 import AddFossils from './pages/AddFossils';
+import FossilCard from './components/FossilCard';
+import headerImage from './assets/imgheader.png';
 
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000').replace(
   /\/$/,
@@ -158,7 +158,6 @@ function HomePage() {
     () => sortFossils(filteredFossils, sortBy),
     [filteredFossils, sortBy],
   );
-
   const toggleEra = (era) => {
     setSelectedEras((current) =>
       current.includes(era) ? current.filter((value) => value !== era) : [...current, era],
