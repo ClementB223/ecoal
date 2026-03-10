@@ -11,9 +11,28 @@ body,
 
 body {
   margin: 0;
-  font-family: 'Trebuchet MS', 'Gill Sans', 'Segoe UI', sans-serif;
+  font-family: 'Source Sans 3', 'Segoe UI', sans-serif;
   background: #2f3f67;
   color: #141923;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.015em;
+}
+
+.hero-copy p,
+.login-hero p,
+.register-hero p {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: 0.01em;
 }
 
 button,

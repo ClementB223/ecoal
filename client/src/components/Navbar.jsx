@@ -59,7 +59,10 @@ export default function Navbar() {
 
         <div className="navbar-right">
           <NavLink to="/add-fossil" className="add-fossil-button">
-            + Add
+            <span className="material-symbols-outlined" aria-hidden="true">
+              add
+            </span>
+            <span>Add</span>
           </NavLink>
           <button
             type="button"

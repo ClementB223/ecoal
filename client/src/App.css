@@ -28,7 +28,7 @@
 }
 
 .hero-banner {
-  border-top: 0.125em solid rgba(245, 248, 255, 0.75);
+  border-top: 0;
   padding: clamp(0.75em, 1.5vw, 1em) 0 clamp(0.85em, 1.8vw, 1.15em);
   display: grid;
   grid-template-columns: minmax(13.125em, 16.25em) minmax(0, 1fr);
