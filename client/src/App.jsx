@@ -1,9 +1,13 @@
-﻿import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './App.css';
 import Navbar from './components/Navbar';
 import FossilCard from './components/FossilCard';
 import headerImage from './assets/imgheader.png';
+import LoginModal from './pages/Login';
+import Register from './pages/Register';
+import AddFossils from './pages/AddFossils';
 
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000').replace(
   /\/$/,
@@ -81,7 +85,7 @@ const sortFossils = (items, sortBy) => {
   }
 };
 
-export default function App() {
+function HomePage() {
   const [fossils, setFossils] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
@@ -154,6 +158,7 @@ export default function App() {
     () => sortFossils(filteredFossils, sortBy),
     [filteredFossils, sortBy],
   );
+
   const toggleEra = (era) => {
     setSelectedEras((current) =>
       current.includes(era) ? current.filter((value) => value !== era) : [...current, era],
@@ -185,175 +190,191 @@ export default function App() {
   };
 
   return (
-    <>
-      <Navbar />
+    <div className="fossil-page">
+      <section className="hero-banner">
+        <div className="hero-right">
+          <div className="hero-copy">
+            <h1>Collection Fossils</h1>
+            <p>Complete your collection</p>
+          </div>
+          <img className="hero-image" src={headerImage} alt="Fossil illustration" />
+        </div>
+      </section>
 
-      <div className="fossil-page">
-        <section className="hero-banner">
-          <div className="hero-right">
-            <div className="hero-copy">
-              <h1>Collection Fossils</h1>
-              <p>Complete your collection</p>
+      <section className="catalog-layout">
+        <aside className="filters-panel">
+          <div className="filters-header">
+            <h2>Filter</h2>
+            <div className="line" />
+          </div>
+
+          <div className="filter-group">
+            <h3>Era</h3>
+            <div className="check-list">
+              {availableEras.map((era) => (
+                <label key={era} className="check-item">
+                  <input
+                    type="checkbox"
+                    checked={selectedEras.includes(era)}
+                    onChange={() => toggleEra(era)}
+                  />
+                  <span>{era}</span>
+                </label>
+              ))}
             </div>
-            <img className="hero-image" src={headerImage} alt="Fossil illustration" />
+          </div>
+
+          <div className="filter-group">
+            <h3>Size</h3>
+            <div className="radio-list">
+              <label className="check-item">
+                <input
+                  type="radio"
+                  name="size-category"
+                  checked={sizeCategory === 'small'}
+                  onChange={() => setSizeCategory('small')}
+                />
+                <span>Small</span>
+              </label>
+              <label className="check-item">
+                <input
+                  type="radio"
+                  name="size-category"
+                  checked={sizeCategory === 'medium'}
+                  onChange={() => setSizeCategory('medium')}
+                />
+                <span>Medium</span>
+              </label>
+              <label className="check-item">
+                <input
+                  type="radio"
+                  name="size-category"
+                  checked={sizeCategory === 'large'}
+                  onChange={() => setSizeCategory('large')}
+                />
+                <span>Large</span>
+              </label>
+              <label className="check-item">
+                <input
+                  type="radio"
+                  name="size-category"
+                  checked={sizeCategory === 'all'}
+                  onChange={() => setSizeCategory('all')}
+                />
+                <span>All</span>
+              </label>
+            </div>
+          </div>
+
+          <div className="filter-group">
+            <h3>Date found</h3>
+            <div className="range-values">
+              <input
+                type="number"
+                min={MIN_YEAR}
+                max={CURRENT_YEAR}
+                value={dateRange.start}
+                onChange={(event) => updateDateStart(event.target.value)}
+              />
+              <input
+                type="number"
+                min={MIN_YEAR}
+                max={CURRENT_YEAR}
+                value={dateRange.end}
+                onChange={(event) => updateDateEnd(event.target.value)}
+              />
+            </div>
+            <div className="range-sliders">
+              <input
+                type="range"
+                min={MIN_YEAR}
+                max={CURRENT_YEAR}
+                value={dateRange.start}
+                onChange={(event) => updateDateStart(event.target.value)}
+              />
+              <input
+                type="range"
+                min={MIN_YEAR}
+                max={CURRENT_YEAR}
+                value={dateRange.end}
+                onChange={(event) => updateDateEnd(event.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="filter-group">
+            <h3>Quality Preservation</h3>
+            <div className="rating-row">
+              {[1, 2, 3, 4, 5].map((level) => (
+                <button
+                  key={level}
+                  type="button"
+                  className={`rating-mark ${minimumQuality >= level ? 'active' : ''}`}
+                  onClick={() => setMinimumQuality((current) => (current === level ? 0 : level))}
+                >
+                  *
+                </button>
+              ))}
+              <span>{minimumQuality || 0}</span>
+            </div>
+          </div>
+
+          <button type="button" className="reset-filters" onClick={resetFilters}>
+            Reset filter
+          </button>
+        </aside>
+
+        <section className="catalog-panel">
+          <header className="catalog-header">
+            <p>Display {sortedFossils.length} fossils</p>
+            <label>
+              Filter by :
+              <select value={sortBy} onChange={(event) => setSortBy(event.target.value)}>
+                <option value="rarity">Rarety</option>
+                <option value="name">Name</option>
+                <option value="size">Size</option>
+                <option value="oldest">Oldest</option>
+              </select>
+            </label>
+          </header>
+
+          <div className="catalog-content">
+            {isLoading ? (
+              <div className="status-box">Loading fossils...</div>
+            ) : loadError ? (
+              <div className="status-box">{loadError}</div>
+            ) : sortedFossils.length === 0 ? (
+              <div className="status-box">No fossils found with these filters.</div>
+            ) : (
+              <div className="cards-grid">
+                {sortedFossils.map((fossil) => (
+                  <FossilCard key={fossil.id} fossil={fossil} />
+                ))}
+              </div>
+            )}
           </div>
         </section>
+      </section>
+    </div>
+  );
+}
 
-        <section className="catalog-layout">
-          <aside className="filters-panel">
-            <div className="filters-header">
-              <h2>Filter</h2>
-              <div className="line" />
-            </div>
+function LoginRoute() {
+  const navigate = useNavigate();
+  return <LoginModal isOpen onClose={() => navigate('/')} />;
+}
 
-            <div className="filter-group">
-              <h3>Era</h3>
-              <div className="check-list">
-                {availableEras.map((era) => (
-                  <label key={era} className="check-item">
-                    <input
-                      type="checkbox"
-                      checked={selectedEras.includes(era)}
-                      onChange={() => toggleEra(era)}
-                    />
-                    <span>{era}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-
-            <div className="filter-group">
-              <h3>Size</h3>
-              <div className="radio-list">
-                <label className="check-item">
-                  <input
-                    type="radio"
-                    name="size-category"
-                    checked={sizeCategory === 'small'}
-                    onChange={() => setSizeCategory('small')}
-                  />
-                  <span>Small</span>
-                </label>
-                <label className="check-item">
-                  <input
-                    type="radio"
-                    name="size-category"
-                    checked={sizeCategory === 'medium'}
-                    onChange={() => setSizeCategory('medium')}
-                  />
-                  <span>Medium</span>
-                </label>
-                <label className="check-item">
-                  <input
-                    type="radio"
-                    name="size-category"
-                    checked={sizeCategory === 'large'}
-                    onChange={() => setSizeCategory('large')}
-                  />
-                  <span>Large</span>
-                </label>
-                <label className="check-item">
-                  <input
-                    type="radio"
-                    name="size-category"
-                    checked={sizeCategory === 'all'}
-                    onChange={() => setSizeCategory('all')}
-                  />
-                  <span>All</span>
-                </label>
-              </div>
-            </div>
-
-            <div className="filter-group">
-              <h3>Date found</h3>
-              <div className="range-values">
-                <input
-                  type="number"
-                  min={MIN_YEAR}
-                  max={CURRENT_YEAR}
-                  value={dateRange.start}
-                  onChange={(event) => updateDateStart(event.target.value)}
-                />
-                <input
-                  type="number"
-                  min={MIN_YEAR}
-                  max={CURRENT_YEAR}
-                  value={dateRange.end}
-                  onChange={(event) => updateDateEnd(event.target.value)}
-                />
-              </div>
-              <div className="range-sliders">
-                <input
-                  type="range"
-                  min={MIN_YEAR}
-                  max={CURRENT_YEAR}
-                  value={dateRange.start}
-                  onChange={(event) => updateDateStart(event.target.value)}
-                />
-                <input
-                  type="range"
-                  min={MIN_YEAR}
-                  max={CURRENT_YEAR}
-                  value={dateRange.end}
-                  onChange={(event) => updateDateEnd(event.target.value)}
-                />
-              </div>
-            </div>
-
-            <div className="filter-group">
-              <h3>Quality Preservation</h3>
-              <div className="rating-row">
-                {[1, 2, 3, 4, 5].map((level) => (
-                  <button
-                    key={level}
-                    type="button"
-                    className={`rating-mark ${minimumQuality >= level ? 'active' : ''}`}
-                    onClick={() => setMinimumQuality((current) => (current === level ? 0 : level))}
-                  >
-                    *
-                  </button>
-                ))}
-                <span>{minimumQuality || 0}</span>
-              </div>
-            </div>
-
-            <button type="button" className="reset-filters" onClick={resetFilters}>
-              Reset filter
-            </button>
-          </aside>
-
-          <section className="catalog-panel">
-            <header className="catalog-header">
-              <p>Display {sortedFossils.length} fossils</p>
-              <label>
-                Filter by :
-                <select value={sortBy} onChange={(event) => setSortBy(event.target.value)}>
-                  <option value="rarity">Rarety</option>
-                  <option value="name">Name</option>
-                  <option value="size">Size</option>
-                  <option value="oldest">Oldest</option>
-                </select>
-              </label>
-            </header>
-
-            <div className="catalog-content">
-              {isLoading ? (
-                <div className="status-box">Loading fossils...</div>
-              ) : loadError ? (
-                <div className="status-box">{loadError}</div>
-              ) : sortedFossils.length === 0 ? (
-                <div className="status-box">No fossils found with these filters.</div>
-              ) : (
-                <div className="cards-grid">
-                  {sortedFossils.map((fossil) => (
-                    <FossilCard key={fossil.id} fossil={fossil} />
-                  ))}
-                </div>
-              )}
-            </div>
-          </section>
-        </section>
-      </div>
+export default function App() {
+  return (
+    <>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/collection" element={<HomePage />} />
+        <Route path="/login" element={<LoginRoute />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/add-fossil" element={<AddFossils />} />
+      </Routes>
     </>
   );
 }

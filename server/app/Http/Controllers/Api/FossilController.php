@@ -98,6 +98,13 @@ class FossilController extends Controller
         return response()->json($fossils);
     }
 
+    public function geologicalEras()
+    {
+        return response()->json(
+            GeologicalEra::orderBy('name')->get()
+        );
+    }
+
 
     public function myFossils(Request $request)
     {

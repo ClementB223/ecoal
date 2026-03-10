@@ -11,6 +11,7 @@ Route::post('/login',    [AuthController::class, 'login']);
 Route::get('/fossils',                          [FossilController::class, 'index']);
 Route::get('/fossils/{id}',                     [FossilController::class, 'show']);
 Route::get('/collections/{id}/fossils',         [FossilController::class, 'byCollection']);
+Route::get('/geological-eras',                  [FossilController::class, 'geologicalEras']);
 
 
 
