@@ -1,6 +1,6 @@
 ﻿.fossil-card {
   overflow: hidden;
-  border-radius: 0 0 1em 1em;
+  border-radius: 0 0 0.3em 0.3em;
   border: 0.125em solid #0f1a31;
   background: linear-gradient(180deg, #ece5d7 0%, #e3ddcf 100%);
   box-shadow: 0 0.625em 1.25em rgba(8, 13, 26, 0.35);

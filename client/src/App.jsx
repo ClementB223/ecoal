@@ -3,6 +3,7 @@ import axios from 'axios';
 import './App.css';
 import Navbar from './components/Navbar';
 import FossilCard from './components/FossilCard';
+import headerImage from './assets/imgheader.png';
 
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000').replace(
   /\/$/,
@@ -153,11 +154,6 @@ export default function App() {
     () => sortFossils(filteredFossils, sortBy),
     [filteredFossils, sortBy],
   );
-  const heroImage = useMemo(
-    () => fossils.find((fossil) => Boolean(fossil.image))?.image ?? DEFAULT_DB_IMAGE,
-    [fossils],
-  );
-
   const toggleEra = (era) => {
     setSelectedEras((current) =>
       current.includes(era) ? current.filter((value) => value !== era) : [...current, era],
@@ -199,7 +195,7 @@ export default function App() {
               <h1>Collection Fossils</h1>
               <p>Complete your collection</p>
             </div>
-            <img className="hero-image" src={heroImage} alt="Fossil illustration" />
+            <img className="hero-image" src={headerImage} alt="Fossil illustration" />
           </div>
         </section>
 
