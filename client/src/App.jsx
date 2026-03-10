@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
 import './App.css';
+import Navbar from './components/Navbar';
 
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000').replace(
   /\/$/,
@@ -281,7 +282,10 @@ export default function App() {
   };
 
   return (
-    <div className="app-layout">
+    <>
+      <Navbar />
+      <div className="app-layout">
+      
       <FilterSidebar
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
@@ -330,6 +334,7 @@ export default function App() {
           )}
         </main>
       </section>
-    </div>
+      </div>
+    </>
   );
 }
