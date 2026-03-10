@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { NavLink } from "react-router-dom";
 import './Navbar.css';
 
 export default function Navbar() {
@@ -13,16 +14,16 @@ export default function Navbar() {
       <div className="navbar-container">
         <div className="navbar-left">
           <a href="/" className="navbar-logo">
-            Logo
+            <NavLink to="/">Logo</NavLink>
           </a>
         </div>
 
         <div className="navbar-center">
             <a href="/" className="nav-link">
-                Home
+            <NavLink to="/">Home</NavLink>
             </a>
             <a href="/collections" className="nav-link">
-                Collections
+            <NavLink to="/collection">Collection</NavLink>
             </a>
         </div>
 
