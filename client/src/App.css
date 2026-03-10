@@ -26,6 +26,14 @@
   gap: 1em;
 }
 
+a {
+  text-decoration: none;
+}
+
+a:visited {
+  color: black;
+}
+
 .hero-right {
   grid-column: 2;
   display: flex;
