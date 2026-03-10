@@ -1,218 +1,102 @@
-import { useEffect, useMemo, useState } from 'react';
+﻿import { useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
 import './App.css';
 import Navbar from './components/Navbar';
+import FossilCard from './components/FossilCard';
 
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000').replace(
   /\/$/,
   '',
 );
-const FALLBACK_IMAGE =
-  'https://images.unsplash.com/photo-1651980802497-2ad4b4adbb5e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080';
+
+const DEFAULT_DB_IMAGE = `${API_BASE_URL}/uploads/fossil-default.svg`;
+const CURRENT_YEAR = new Date().getFullYear();
+const MIN_YEAR = 1900;
+
+const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+
+const resolveImageUrl = (value) => {
+  if (!value) {
+    return DEFAULT_DB_IMAGE;
+  }
+
+  if (/^https?:\/\//i.test(value)) {
+    return value;
+  }
+
+  return `${API_BASE_URL}/${String(value).replace(/^\/+/, '')}`;
+};
+
+const parseYear = (value) => {
+  const year = Number.parseInt(value, 10);
+  return Number.isNaN(year) ? null : year;
+};
 
 const mapFossil = (fossil) => {
   const criteria = fossil?.criteria || {};
   const geologicalEra = fossil?.geological_era || fossil?.geologicalEra || {};
-  const sizeCm = Number(criteria.size_cm ?? 0);
+  const sizeCm = Number(criteria.size_cm ?? fossil?.size_cm ?? 0);
+  const ageMyo = Number(criteria.age_myo ?? fossil?.age_myo ?? 0);
+  const preservation = Number(criteria.preservation ?? fossil?.preservation ?? 0);
   const imagePath = fossil?.image_url || fossil?.image_path;
+  const yearFromDateFound = parseYear(fossil?.date_found ?? fossil?.dateFound);
+  const yearFromCreatedAt = fossil?.created_at ? new Date(fossil.created_at).getFullYear() : null;
+  const dateYear = yearFromDateFound ?? yearFromCreatedAt;
 
   return {
     id: String(fossil?.id ?? ''),
     name: fossil?.name ?? 'Unknown fossil',
-    scientificName: fossil?.scientific_name ?? fossil?.scientificName ?? '—',
-    geologicalArea: fossil?.geological_area ?? fossil?.geologicalArea ?? 'Unknown',
-    dateFound: fossil?.date_found ?? fossil?.dateFound ?? '—',
-    size: sizeCm ? `${sizeCm} cm` : '—',
-    sizeInCm: Number.isFinite(sizeCm) ? sizeCm : 0,
+    description: fossil?.description ?? 'No description available.',
     era: geologicalEra?.name ?? 'Unknown',
-    period: fossil?.period ?? geologicalEra?.name ?? '—',
-    type: fossil?.type ?? '—',
-    image: imagePath ? `${API_BASE_URL}/${imagePath}` : FALLBACK_IMAGE,
-    description: fossil?.description ?? '',
+    dateFound: dateYear ? String(dateYear) : 'Unknown',
+    dateYear,
+    ageMyo: Number.isFinite(ageMyo) ? ageMyo : 0,
+    sizeCm: Number.isFinite(sizeCm) ? sizeCm : 0,
+    sizeLabel: Number.isFinite(sizeCm) && sizeCm > 0 ? `${sizeCm} cm` : 'Unknown',
+    preservation: Number.isFinite(preservation) ? preservation : 0,
+    location:
+      fossil?.geological_area ??
+      fossil?.geologicalArea ??
+      fossil?.collection?.name ??
+      fossil?.collection?.user?.name ??
+      'Unknown',
+    image: resolveImageUrl(imagePath),
   };
 };
 
-function FossilCard({ fossil }) {
-  return (
-    <article className="fossil-card">
-      <div className="fossil-image-wrap">
-        <img src={fossil.image} alt={fossil.name} className="fossil-image" />
-        <span className="badge badge-era">{fossil.era}</span>
-      </div>
-      <div className="fossil-body">
-        <div>
-          <h3 className="fossil-title">{fossil.name}</h3>
-          <p className="fossil-scientific">{fossil.scientificName}</p>
-        </div>
+const sortFossils = (items, sortBy) => {
+  const list = [...items];
 
-        <p className="fossil-description">{fossil.description}</p>
-
-        <div className="fossil-meta">
-          <p>Location: {fossil.geologicalArea}</p>
-          <p>Found: {fossil.dateFound}</p>
-          <p>Size: {fossil.size}</p>
-        </div>
-
-        <div className="badge-row">
-          <span className="badge badge-outline">{fossil.period}</span>
-          <span className="badge badge-outline">{fossil.type}</span>
-        </div>
-      </div>
-    </article>
-  );
-}
-
-function FilterSidebar({
-  searchTerm,
-  onSearchChange,
-  selectedAreas,
-  onAreasChange,
-  availableAreas,
-  dateRange,
-  onDateRangeChange,
-  sizeRange,
-  onSizeRangeChange,
-  maxSize,
-  onReset,
-}) {
-  const toggleArea = (area) => {
-    if (selectedAreas.includes(area)) {
-      onAreasChange(selectedAreas.filter((item) => item !== area));
-      return;
-    }
-    onAreasChange([...selectedAreas, area]);
-  };
-
-  const handleSizeMin = (value) => {
-    const min = Number(value);
-    onSizeRangeChange([Math.min(min, sizeRange[1]), sizeRange[1]]);
-  };
-
-  const handleSizeMax = (value) => {
-    const max = Number(value);
-    onSizeRangeChange([sizeRange[0], Math.max(max, sizeRange[0])]);
-  };
-
-  return (
-    <aside className="sidebar">
-      <div className="sidebar-head">
-        <h2>Filters</h2>
-        <button type="button" className="btn" onClick={onReset}>
-          Reset All Filters
-        </button>
-      </div>
-
-      <div className="filter-group">
-        <label htmlFor="search">Search by Name</label>
-        <input
-          id="search"
-          type="text"
-          className="field"
-          placeholder="Search fossils..."
-          value={searchTerm}
-          onChange={(event) => onSearchChange(event.target.value)}
-        />
-      </div>
-
-      <div className="divider" />
-
-      <div className="filter-group">
-        <h3>Geological Area</h3>
-        <div className="check-list">
-          {availableAreas.map((area) => (
-            <label key={area} className="check-item">
-              <input
-                type="checkbox"
-                checked={selectedAreas.includes(area)}
-                onChange={() => toggleArea(area)}
-              />
-              <span>{area}</span>
-            </label>
-          ))}
-        </div>
-      </div>
-
-      <div className="divider" />
-
-      <div className="filter-group">
-        <h3>Date Found</h3>
-        <div className="range-row">
-          <input
-            type="number"
-            min={1800}
-            max={2026}
-            className="field field-small"
-            value={dateRange.start}
-            onChange={(event) =>
-              onDateRangeChange({ ...dateRange, start: Number(event.target.value) })
-            }
-          />
-          <span>to</span>
-          <input
-            type="number"
-            min={1800}
-            max={2026}
-            className="field field-small"
-            value={dateRange.end}
-            onChange={(event) =>
-              onDateRangeChange({ ...dateRange, end: Number(event.target.value) })
-            }
-          />
-        </div>
-      </div>
-
-      <div className="divider" />
-
-      <div className="filter-group">
-        <h3>Size (cm)</h3>
-        <div className="slider-wrap">
-          <label>
-            Min: {sizeRange[0]} cm
-            <input
-              type="range"
-              min={0}
-              max={maxSize}
-              value={sizeRange[0]}
-              onChange={(event) => handleSizeMin(event.target.value)}
-            />
-          </label>
-          <label>
-            Max: {sizeRange[1]} cm
-            <input
-              type="range"
-              min={0}
-              max={maxSize}
-              value={sizeRange[1]}
-              onChange={(event) => handleSizeMax(event.target.value)}
-            />
-          </label>
-        </div>
-      </div>
-    </aside>
-  );
-}
+  switch (sortBy) {
+    case 'name':
+      return list.sort((a, b) => a.name.localeCompare(b.name));
+    case 'size':
+      return list.sort((a, b) => b.sizeCm - a.sizeCm);
+    case 'oldest':
+      return list.sort((a, b) => b.ageMyo - a.ageMyo);
+    case 'rarity':
+    default:
+      return list.sort((a, b) => b.preservation - a.preservation);
+  }
+};
 
 export default function App() {
   const [fossils, setFossils] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedAreas, setSelectedAreas] = useState([]);
-  const [dateRange, setDateRange] = useState({ start: 1800, end: 2026 });
+  const [selectedEras, setSelectedEras] = useState([]);
+  const [sizeCategory, setSizeCategory] = useState('all');
+  const [dateRange, setDateRange] = useState({ start: MIN_YEAR, end: CURRENT_YEAR });
+  const [minimumQuality, setMinimumQuality] = useState(0);
+  const [sortBy, setSortBy] = useState('rarity');
 
-  const maxSize = useMemo(
-    () => (fossils.length > 0 ? Math.max(...fossils.map((fossil) => fossil.sizeInCm)) : 0),
-    [fossils],
-  );
-  const [sizeRange, setSizeRange] = useState([0, maxSize]);
-
-  const availableAreas = useMemo(() => {
-    const areas = new Set(fossils.map((fossil) => fossil.geologicalArea));
-    return Array.from(areas).sort();
+  const availableEras = useMemo(() => {
+    const eras = new Set(fossils.map((fossil) => fossil.era).filter(Boolean));
+    return Array.from(eras).sort((a, b) => a.localeCompare(b));
   }, [fossils]);
 
   useEffect(() => {
-    let isActive = true;
+    let isMounted = true;
 
     const fetchFossils = async () => {
       setIsLoading(true);
@@ -221,19 +105,18 @@ export default function App() {
       try {
         const response = await axios.get(`${API_BASE_URL}/api/fossils`);
         const items = Array.isArray(response.data) ? response.data : [];
-        if (isActive) {
+
+        if (isMounted) {
           setFossils(items.map(mapFossil));
         }
       } catch (error) {
-        if (isActive) {
+        if (isMounted) {
           setLoadError(
-            error?.response?.data?.message ||
-              error?.message ||
-              'Unable to load fossils right now.',
+            error?.response?.data?.message || error?.message || 'Unable to load fossils right now.',
           );
         }
       } finally {
-        if (isActive) {
+        if (isMounted) {
           setIsLoading(false);
         }
       }
@@ -242,98 +125,238 @@ export default function App() {
     fetchFossils();
 
     return () => {
-      isActive = false;
+      isMounted = false;
     };
   }, []);
 
-  useEffect(() => {
-    if (maxSize > 0 && sizeRange[1] === 0) {
-      setSizeRange([0, maxSize]);
-    }
-  }, [maxSize, sizeRange]);
+  const filteredFossils = useMemo(() => {
+    return fossils.filter((fossil) => {
+      const matchesEra = selectedEras.length === 0 || selectedEras.includes(fossil.era);
 
-  const filteredFossils = useMemo(
-    () =>
-      fossils.filter((fossil) => {
-        const matchesSearch =
-          searchTerm === '' ||
-          fossil.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          fossil.scientificName.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesSize =
+        sizeCategory === 'all' ||
+        (sizeCategory === 'small' && fossil.sizeCm <= 12) ||
+        (sizeCategory === 'medium' && fossil.sizeCm > 12 && fossil.sizeCm <= 25) ||
+        (sizeCategory === 'large' && fossil.sizeCm > 25);
 
-        const matchesArea =
-          selectedAreas.length === 0 || selectedAreas.includes(fossil.geologicalArea);
+      const matchesDate =
+        fossil.dateYear === null ||
+        (fossil.dateYear >= dateRange.start && fossil.dateYear <= dateRange.end);
 
-        const year = Number.parseInt(fossil.dateFound, 10);
-        const matchesDate =
-          Number.isNaN(year) || (year >= dateRange.start && year <= dateRange.end);
-        const matchesSize =
-          fossil.sizeInCm >= sizeRange[0] && fossil.sizeInCm <= sizeRange[1];
+      const matchesQuality = minimumQuality === 0 || fossil.preservation >= minimumQuality;
 
-        return matchesSearch && matchesArea && matchesDate && matchesSize;
-      }),
-    [fossils, searchTerm, selectedAreas, dateRange, sizeRange],
+      return matchesEra && matchesSize && matchesDate && matchesQuality;
+    });
+  }, [fossils, selectedEras, sizeCategory, dateRange, minimumQuality]);
+
+  const sortedFossils = useMemo(
+    () => sortFossils(filteredFossils, sortBy),
+    [filteredFossils, sortBy],
+  );
+  const heroImage = useMemo(
+    () => fossils.find((fossil) => Boolean(fossil.image))?.image ?? DEFAULT_DB_IMAGE,
+    [fossils],
   );
 
-  const handleReset = () => {
-    setSearchTerm('');
-    setSelectedAreas([]);
-    setDateRange({ start: 1800, end: 2026 });
-    setSizeRange([0, maxSize]);
+  const toggleEra = (era) => {
+    setSelectedEras((current) =>
+      current.includes(era) ? current.filter((value) => value !== era) : [...current, era],
+    );
+  };
+
+  const updateDateStart = (rawValue) => {
+    setDateRange((current) => {
+      const parsed = Number.parseInt(rawValue, 10);
+      const nextStart = Number.isNaN(parsed) ? current.start : clamp(parsed, MIN_YEAR, current.end);
+      return { ...current, start: nextStart };
+    });
+  };
+
+  const updateDateEnd = (rawValue) => {
+    setDateRange((current) => {
+      const parsed = Number.parseInt(rawValue, 10);
+      const nextEnd = Number.isNaN(parsed) ? current.end : clamp(parsed, current.start, CURRENT_YEAR);
+      return { ...current, end: nextEnd };
+    });
+  };
+
+  const resetFilters = () => {
+    setSelectedEras([]);
+    setSizeCategory('all');
+    setDateRange({ start: MIN_YEAR, end: CURRENT_YEAR });
+    setMinimumQuality(0);
+    setSortBy('rarity');
   };
 
   return (
     <>
       <Navbar />
-      <div className="app-layout">
-      
-      <FilterSidebar
-        searchTerm={searchTerm}
-        onSearchChange={setSearchTerm}
-        selectedAreas={selectedAreas}
-        onAreasChange={setSelectedAreas}
-        availableAreas={availableAreas}
-        dateRange={dateRange}
-        onDateRangeChange={setDateRange}
-        sizeRange={sizeRange}
-        onSizeRangeChange={setSizeRange}
-        maxSize={maxSize}
-        onReset={handleReset}
-      />
 
-      <section className="content">
-        <header className="content-head">
-          <h1>Remarkable Fossils</h1>
-          <p>Explore our extraordinary collection of prehistoric treasures from around the world</p>
-          <small>
-            Showing {filteredFossils.length} of {fossils.length} fossils
-          </small>
-        </header>
+      <div className="fossil-page">
+        <section className="hero-banner">
+          <div className="hero-right">
+            <div className="hero-copy">
+              <h1>Collection Fossils</h1>
+              <p>Complete your collection</p>
+            </div>
+            <img className="hero-image" src={heroImage} alt="Fossil illustration" />
+          </div>
+        </section>
 
-        <main className="content-main">
-          {isLoading ? (
-            <div className="empty-state">
-              <h3>Loading fossils...</h3>
-              <p>Fetching data from the API.</p>
+        <section className="catalog-layout">
+          <aside className="filters-panel">
+            <div className="filters-header">
+              <h2>Filter</h2>
+              <div className="line" />
             </div>
-          ) : loadError ? (
-            <div className="empty-state">
-              <h3>Unable to load fossils</h3>
-              <p>{loadError}</p>
+
+            <div className="filter-group">
+              <h3>Era</h3>
+              <div className="check-list">
+                {availableEras.map((era) => (
+                  <label key={era} className="check-item">
+                    <input
+                      type="checkbox"
+                      checked={selectedEras.includes(era)}
+                      onChange={() => toggleEra(era)}
+                    />
+                    <span>{era}</span>
+                  </label>
+                ))}
+              </div>
             </div>
-          ) : filteredFossils.length > 0 ? (
-            <div className="fossil-grid">
-              {filteredFossils.map((fossil) => (
-                <FossilCard key={fossil.id} fossil={fossil} />
-              ))}
+
+            <div className="filter-group">
+              <h3>Size</h3>
+              <div className="radio-list">
+                <label className="check-item">
+                  <input
+                    type="radio"
+                    name="size-category"
+                    checked={sizeCategory === 'small'}
+                    onChange={() => setSizeCategory('small')}
+                  />
+                  <span>Small</span>
+                </label>
+                <label className="check-item">
+                  <input
+                    type="radio"
+                    name="size-category"
+                    checked={sizeCategory === 'medium'}
+                    onChange={() => setSizeCategory('medium')}
+                  />
+                  <span>Medium</span>
+                </label>
+                <label className="check-item">
+                  <input
+                    type="radio"
+                    name="size-category"
+                    checked={sizeCategory === 'large'}
+                    onChange={() => setSizeCategory('large')}
+                  />
+                  <span>Large</span>
+                </label>
+                <label className="check-item">
+                  <input
+                    type="radio"
+                    name="size-category"
+                    checked={sizeCategory === 'all'}
+                    onChange={() => setSizeCategory('all')}
+                  />
+                  <span>All</span>
+                </label>
+              </div>
             </div>
-          ) : (
-            <div className="empty-state">
-              <h3>No fossils found</h3>
-              <p>Try adjusting your filters to see more results.</p>
+
+            <div className="filter-group">
+              <h3>Date found</h3>
+              <div className="range-values">
+                <input
+                  type="number"
+                  min={MIN_YEAR}
+                  max={CURRENT_YEAR}
+                  value={dateRange.start}
+                  onChange={(event) => updateDateStart(event.target.value)}
+                />
+                <input
+                  type="number"
+                  min={MIN_YEAR}
+                  max={CURRENT_YEAR}
+                  value={dateRange.end}
+                  onChange={(event) => updateDateEnd(event.target.value)}
+                />
+              </div>
+              <div className="range-sliders">
+                <input
+                  type="range"
+                  min={MIN_YEAR}
+                  max={CURRENT_YEAR}
+                  value={dateRange.start}
+                  onChange={(event) => updateDateStart(event.target.value)}
+                />
+                <input
+                  type="range"
+                  min={MIN_YEAR}
+                  max={CURRENT_YEAR}
+                  value={dateRange.end}
+                  onChange={(event) => updateDateEnd(event.target.value)}
+                />
+              </div>
             </div>
-          )}
-        </main>
-      </section>
+
+            <div className="filter-group">
+              <h3>Quality Preservation</h3>
+              <div className="rating-row">
+                {[1, 2, 3, 4, 5].map((level) => (
+                  <button
+                    key={level}
+                    type="button"
+                    className={`rating-mark ${minimumQuality >= level ? 'active' : ''}`}
+                    onClick={() => setMinimumQuality((current) => (current === level ? 0 : level))}
+                  >
+                    *
+                  </button>
+                ))}
+                <span>{minimumQuality || 0}</span>
+              </div>
+            </div>
+
+            <button type="button" className="reset-filters" onClick={resetFilters}>
+              Reset filter
+            </button>
+          </aside>
+
+          <section className="catalog-panel">
+            <header className="catalog-header">
+              <p>Display {sortedFossils.length} fossils</p>
+              <label>
+                Filter by :
+                <select value={sortBy} onChange={(event) => setSortBy(event.target.value)}>
+                  <option value="rarity">Rarety</option>
+                  <option value="name">Name</option>
+                  <option value="size">Size</option>
+                  <option value="oldest">Oldest</option>
+                </select>
+              </label>
+            </header>
+
+            <div className="catalog-content">
+              {isLoading ? (
+                <div className="status-box">Loading fossils...</div>
+              ) : loadError ? (
+                <div className="status-box">{loadError}</div>
+              ) : sortedFossils.length === 0 ? (
+                <div className="status-box">No fossils found with these filters.</div>
+              ) : (
+                <div className="cards-grid">
+                  {sortedFossils.map((fossil) => (
+                    <FossilCard key={fossil.id} fossil={fossil} />
+                  ))}
+                </div>
+              )}
+            </div>
+          </section>
+        </section>
       </div>
     </>
   );

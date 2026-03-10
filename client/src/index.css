@@ -1,6 +1,23 @@
+﻿* {
+  box-sizing: border-box;
+}
+
 html,
 body,
 #root {
   width: 100%;
   min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: 'Trebuchet MS', 'Gill Sans', 'Segoe UI', sans-serif;
+  background: #2f3f67;
+  color: #f2f5ff;
+}
+
+button,
+input,
+select {
+  font: inherit;
 }
