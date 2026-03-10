@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route, useLocation, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import './App.css';
 import Navbar from './components/Navbar';
@@ -7,7 +7,7 @@ import LoginModal from './pages/Login';
 import Register from './pages/Register';
 import AddFossils from './pages/AddFossils';
 import FossilCard from './components/FossilCard';
-import headerImage from './assets/imgheader.png';
+import headerImage from './assets/imgheader2.png';
 
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000').replace(
   /\/$/,
@@ -86,6 +86,7 @@ const sortFossils = (items, sortBy) => {
 };
 
 function HomePage() {
+  const navigate = useNavigate();
   const [fossils, setFossils] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
@@ -188,6 +189,12 @@ function HomePage() {
     setSortBy('rarity');
   };
 
+  const openFossilDetails = (fossil) => {
+    navigate(`/fossils/${fossil.id}`, { state: { fossil } });
+  };
+
+  const fossilCountLabel = isLoading ? '--' : fossils.length;
+  const eraCountLabel = isLoading ? '--' : availableEras.length;
   return (
     <div className="fossil-page">
       <section className="hero-banner">
@@ -195,9 +202,51 @@ function HomePage() {
           <div className="hero-copy">
             <h1>Collection Fossils</h1>
             <p>Complete your collection</p>
+            <ul className="hero-stats" aria-label="Collection stats">
+              <li className="hero-stat">
+                <span className="material-symbols-outlined" aria-hidden="true">
+                  history_edu
+                </span>
+                <strong>{fossilCountLabel}</strong>
+                <span>Fossils</span>
+              </li>
+              <li className="hero-stat">
+                <span className="material-symbols-outlined" aria-hidden="true">
+                  layers
+                </span>
+                <strong>{eraCountLabel}</strong>
+                <span>Eras</span>
+              </li>
+            </ul>
           </div>
           <img className="hero-image" src={headerImage} alt="Fossil illustration" />
         </div>
+      </section>
+
+      <section className="hero-insights" aria-label="Collection highlights">
+        <article className="hero-insight">
+          <span className="hero-insight-icon material-symbols-outlined" aria-hidden="true">
+            travel_explore
+          </span>
+          <h3>Found locations</h3>
+          <p>Europe • Asia • America</p>
+        </article>
+
+        <article className="hero-insight">
+          <span className="hero-insight-icon material-symbols-outlined" aria-hidden="true">
+            history_edu
+          </span>
+          <h3>Oldest fossil</h3>
+          <p>245 million years</p>
+        </article>
+
+        <article className="hero-insight">
+          <span className="hero-insight-icon material-symbols-outlined" aria-hidden="true">
+            star
+          </span>
+          <h3>Collection rarity</h3>
+          <p>12 rare specimens</p>
+        </article>
       </section>
 
       <section className="catalog-layout">
@@ -347,7 +396,7 @@ function HomePage() {
             ) : (
               <div className="cards-grid">
                 {sortedFossils.map((fossil) => (
-                  <FossilCard key={fossil.id} fossil={fossil} />
+                  <FossilCard key={fossil.id} fossil={fossil} onMoreClick={openFossilDetails} />
                 ))}
               </div>
             )}
@@ -358,14 +407,138 @@ function HomePage() {
   );
 }
 
+function FossilDetailsPage() {
+  const { fossilId } = useParams();
+  const location = useLocation();
+  const [fossil, setFossil] = useState(location.state?.fossil || null);
+  const [isLoading, setIsLoading] = useState(!location.state?.fossil);
+  const [loadError, setLoadError] = useState('');
+
+  useEffect(() => {
+    if (!fossilId) return;
+
+    let isMounted = true;
+
+    const loadFossilDetails = async () => {
+      setIsLoading(true);
+      setLoadError('');
+
+      try {
+        const detailsResponse = await axios.get(`${API_BASE_URL}/api/fossils/${fossilId}`);
+        const detailsData = detailsResponse?.data;
+
+        if (isMounted && detailsData && !Array.isArray(detailsData)) {
+          setFossil(mapFossil(detailsData));
+          return;
+        }
+
+        const listResponse = await axios.get(`${API_BASE_URL}/api/fossils`);
+        const items = Array.isArray(listResponse.data) ? listResponse.data : [];
+        const matching = items.find((item) => String(item?.id) === String(fossilId));
+
+        if (isMounted) {
+          if (matching) {
+            setFossil(mapFossil(matching));
+          } else {
+            setLoadError('Fossil not found.');
+          }
+        }
+      } catch {
+        try {
+          const listResponse = await axios.get(`${API_BASE_URL}/api/fossils`);
+          const items = Array.isArray(listResponse.data) ? listResponse.data : [];
+          const matching = items.find((item) => String(item?.id) === String(fossilId));
+
+          if (isMounted) {
+            if (matching) {
+              setFossil(mapFossil(matching));
+            } else {
+              setLoadError('Fossil not found.');
+            }
+          }
+        } catch (error) {
+          if (isMounted) {
+            setLoadError(
+              error?.response?.data?.message || error?.message || 'Unable to load fossil details.',
+            );
+          }
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    loadFossilDetails();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [fossilId]);
+
+  return (
+    <div className="fossil-detail-page">
+      {isLoading ? (
+        <div className="status-box">Loading fossil details...</div>
+      ) : loadError ? (
+        <div className="status-box">{loadError}</div>
+      ) : !fossil ? (
+        <div className="status-box">No fossil available.</div>
+      ) : (
+        <>
+          <section className="fossil-detail-top">
+            <div className="fossil-detail-image-wrap">
+              <img src={fossil.image} alt={fossil.name} className="fossil-detail-image" />
+            </div>
+
+            <ul className="fossil-detail-meta">
+              <li>
+                <span className="material-symbols-outlined" aria-hidden="true">
+                  history_edu
+                </span>
+                <span>{fossil.era}</span>
+              </li>
+              <li>
+                <span className="material-symbols-outlined" aria-hidden="true">
+                  hourglass_top
+                </span>
+                <span>{fossil.dateFound}</span>
+              </li>
+              <li>
+                <span className="material-symbols-outlined" aria-hidden="true">
+                  straighten
+                </span>
+                <span>{fossil.sizeLabel}</span>
+              </li>
+              <li>
+                <span className="material-symbols-outlined" aria-hidden="true">
+                  public
+                </span>
+                <span>{fossil.location}</span>
+              </li>
+            </ul>
+          </section>
+
+          <section className="fossil-detail-description">
+            <h2>{fossil.name}</h2>
+            <h3>Description</h3>
+            <p>{fossil.description}</p>
+          </section>
+        </>
+      )}
+    </div>
+  );
+}
+
 function LoginRoute() {
   const navigate = useNavigate();
-  return <LoginModal isOpen onClose={() => navigate('/')} />;
+  return <LoginModal isOpen mode="page" onClose={() => navigate('/')} onSuccess={() => navigate('/')} />;
 }
 
 export default function App() {
   return (
-    <>
+    <div className="app-surface">
       <Navbar />
       <Routes>
         <Route path="/" element={<HomePage />} />
@@ -373,7 +546,8 @@ export default function App() {
         <Route path="/login" element={<LoginRoute />} />
         <Route path="/register" element={<Register />} />
         <Route path="/add-fossil" element={<AddFossils />} />
+        <Route path="/fossils/:fossilId" element={<FossilDetailsPage />} />
       </Routes>
-    </>
+    </div>
   );
 }

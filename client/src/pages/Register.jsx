@@ -40,62 +40,69 @@ export default function Register() {
 
   return (
     <div className="register-page">
-      <div className="register-card">
-        <h1>Create account</h1>
-        <p>Join Ecoal to access your collections.</p>
+      <section className="register-shell">
+        <header className="register-hero">
+          <h1>Collection Fossils</h1>
+          <p>Create your account to start your collection</p>
+        </header>
 
-        <form onSubmit={handleSubmit} className="register-form">
-          <label>
-            Name
-            <input
-              type="text"
-              value={name}
-              onChange={(event) => setName(event.target.value)}
-              required
-            />
-          </label>
-          <label>
-            Email
-            <input
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              required
-            />
-          </label>
-          <label>
-            Password
-            <input
-              type="password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              required
-            />
-          </label>
-          <label>
-            Confirm Password
-            <input
-              type="password"
-              value={passwordConfirmation}
-              onChange={(event) => setPasswordConfirmation(event.target.value)}
-              required
-            />
-          </label>
+        <div className="register-card">
+          <h2>Create account</h2>
+          <p>Join Ecoal to access your collections.</p>
 
-          {error && <p className="modal-error">{error}</p>}
+          <form onSubmit={handleSubmit} className="register-form">
+            <label>
+              Name
+              <input
+                type="text"
+                value={name}
+                onChange={(event) => setName(event.target.value)}
+                required
+              />
+            </label>
+            <label>
+              Email
+              <input
+                type="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                required
+              />
+            </label>
+            <label>
+              Password
+              <input
+                type="password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                required
+              />
+            </label>
+            <label>
+              Confirm Password
+              <input
+                type="password"
+                value={passwordConfirmation}
+                onChange={(event) => setPasswordConfirmation(event.target.value)}
+                required
+              />
+            </label>
 
-          <button type="submit" className="modal-submit" disabled={isSubmitting}>
-            {isSubmitting ? 'Creating...' : 'Create account'}
-          </button>
-        </form>
+            {error && <p className="register-error">{error}</p>}
 
-        <div className="register-footer">
-          <span>Already have an account?</span>
-          <Link to="/login" className="login-link" onClick={() => navigate('/login')}>
-            Login
-          </Link>
+            <button type="submit" className="register-submit" disabled={isSubmitting}>
+              {isSubmitting ? 'Creating...' : 'Create account'}
+            </button>
+          </form>
+
+          <div className="register-footer">
+            <span>Already have an account?</span>
+            <Link to="/login" className="register-link" onClick={() => navigate('/login')}>
+              Login
+            </Link>
+          </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 }

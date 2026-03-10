@@ -3,12 +3,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import { login } from '../services/AuthServices';
 import './Login.css';
 
-export default function LoginModal({ isOpen = false, onClose, onSuccess }) {
+export default function LoginModal({ isOpen = false, onClose, onSuccess, mode = 'popover' }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
+  const isPageMode = mode === 'page';
 
   if (!isOpen) return null;
 
@@ -33,23 +34,25 @@ export default function LoginModal({ isOpen = false, onClose, onSuccess }) {
     navigate('/register');
   };
 
-  return (
+  const panel = (
     <div
       id="login-modal"
-      className="login-popover"
+      className={`login-panel ${isPageMode ? 'login-panel--page' : 'login-panel--popover'}`}
       role="dialog"
-      aria-modal="false"
+      aria-modal={isPageMode ? 'true' : 'false'}
       aria-label="Login"
     >
-      <div className="modal-header">
+      <div className="login-panel-header">
         <h2>Login</h2>
-        <button type="button" className="modal-close" onClick={onClose}>
-          Close
-        </button>
+        {onClose ? (
+          <button type="button" className="login-panel-close" onClick={onClose}>
+            {isPageMode ? 'Back' : 'Close'}
+          </button>
+        ) : null}
       </div>
 
-      <form className="modal-body" onSubmit={handleSubmit}>
-        <label className="modal-field">
+      <form className="login-panel-body" onSubmit={handleSubmit}>
+        <label className="login-panel-field">
           Email
           <input
             type="email"
@@ -59,7 +62,7 @@ export default function LoginModal({ isOpen = false, onClose, onSuccess }) {
           />
         </label>
 
-        <label className="modal-field">
+        <label className="login-panel-field">
           Password
           <input
             type="password"
@@ -69,19 +72,37 @@ export default function LoginModal({ isOpen = false, onClose, onSuccess }) {
           />
         </label>
 
-        {error && <p className="modal-error">{error}</p>}
+        {error && <p className="login-panel-error">{error}</p>}
 
-        <button type="submit" className="modal-submit" disabled={isSubmitting}>
+        <button type="submit" className="login-panel-submit" disabled={isSubmitting}>
           {isSubmitting ? 'Signing in...' : 'Sign in'}
         </button>
       </form>
 
-      <div className="modal-footer">
-        <span>Don't have an account?</span>
-        <Link to="/register" onClick={handleRegister} className="login-link">
+      <div className="login-panel-footer">
+        <span>Don&apos;t have an account?</span>
+        <Link to="/register" onClick={handleRegister} className="login-switch-link">
           Register
         </Link>
       </div>
     </div>
+  );
+
+  if (isPageMode) {
+    return (
+      <div className="login-page">
+        <section className="login-shell">
+          <header className="login-hero">
+            <h1>Collection Fossils</h1>
+            <p>Sign in to continue your collection</p>
+          </header>
+          {panel}
+        </section>
+      </div>
+    );
+  }
+
+  return (
+    panel
   );
 }

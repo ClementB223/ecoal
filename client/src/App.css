@@ -1,4 +1,4 @@
-﻿:root {
+:root {
   --bg-main: #2f3f67;
   --bg-panel: #1f2c4f;
   --paper: #ebe4d4;
@@ -11,11 +11,20 @@
   --accent: #a77748;
 }
 
+.app-surface {
+  min-height: 100vh;
+  background-color: var(--bg-main);
+  background-image: url('./assets/bg.png');
+  background-repeat: no-repeat;
+  background-position: top center;
+  background-size: 100% auto;
+}
+
 .fossil-page {
   min-height: calc(100vh - 4em);
-  background: var(--bg-main);
+  background-color: transparent;
   color: var(--soft-light);
-  padding: 0.4em 6.25em 1.75em 6.25em;
+  padding: 0.1em 6.25em 1.75em 6.25em;
 }
 
 .hero-banner {
@@ -35,11 +44,15 @@ a:visited {
 }
 
 .hero-right {
-  grid-column: 2;
+  grid-column: 1 / -1;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1em;
+}
+
+.hero-copy {
+  padding-left: 80px;
 }
 
 .hero-copy h1 {
@@ -57,16 +70,89 @@ a:visited {
   line-height: 1.1;
 }
 
+.hero-stats {
+  margin: 0.9em 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.85em;
+}
+
+.hero-stat {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.32em;
+  font-size: clamp(1.15rem, 1.85vw, 1.75rem);
+  color: #e6d6b7;
+  line-height: 1;
+}
+
+.hero-stat + .hero-stat {
+  padding-left: 0.85em;
+  border-left: 0.0625em solid rgba(230, 214, 183, 0.4);
+}
+
+.hero-stat strong {
+  font-size: 1.15em;
+  font-weight: 700;
+  color: #f2e6cf;
+}
+
+.hero-stat .material-symbols-outlined {
+  font-size: 1.1em;
+  color: #d6bb8a;
+}
+
 .hero-image {
-  width: min(62vw, 36em);
+  width: min(62.5vw, 36.3em);
   min-width: 22em;
   aspect-ratio: 12 / 7;
   object-fit: cover;
   object-position: center;
   display: block;
   margin: 0.1em 0 0.35em;
-  transform: translateX(-1.5em);
+  transform: translateX(-1.65em);
   filter: drop-shadow(0 0.625em 1.125em rgba(0, 0, 0, 0.38));
+}
+
+.hero-insights {
+  margin-top: 0.2em;
+  padding: 1.05em 0 0.4em 80px;
+  border-top: 0.0625em solid rgba(230, 214, 183, 0.2);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5em;
+}
+
+.hero-insight {
+  color: #e9d8b8;
+}
+
+.hero-insight-icon {
+  width: 1.9em;
+  height: 1.9em;
+  border-radius: 50%;
+  display: inline-grid;
+  place-items: center;
+  background: rgba(232, 210, 168, 0.2);
+  border: 0.0625em solid rgba(232, 210, 168, 0.45);
+  color: #e7cf9f;
+  font-size: 1.5rem;
+}
+
+.hero-insight h3 {
+  margin: 0.45em 0 0;
+  font-size: clamp(2rem, 2.35vw, 2.7rem);
+  line-height: 1.05;
+  font-weight: 500;
+}
+
+.hero-insight p {
+  margin: 0.3em 0 0;
+  font-size: clamp(1.45rem, 1.6vw, 1.95rem);
+  color: #f0e5d1;
 }
 
 .catalog-layout {
@@ -265,88 +351,272 @@ a:visited {
 
 
 .add-fossil-page {
-  min-height: calc(100vh - 112px);
-  display: grid;
-  place-items: center;
-  padding: 32px 16px 64px;
+  min-height: calc(100vh - 7rem);
+  background: var(--bg-main);
+  color: var(--soft-light);
+  padding: 1.25em 2em 2em;
 }
 
-.add-fossil-card {
-  width: min(760px, 96vw);
-  background: #ffffff;
-  padding: 28px 32px;
-  border-radius: 18px;
-  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.12);
-}
-
-.add-fossil-header h1 {
-  margin-top: 0;
+.add-fossil-shell {
+  width: min(75em, 100%);
+  margin: 0 auto;
 }
 
 .add-fossil-form {
   display: grid;
-  gap: 14px;
-  margin-top: 18px;
+  grid-template-columns: minmax(0, 1fr) minmax(16em, 19em);
+  gap: 3em;
+  align-items: start;
 }
 
-.add-fossil-form label {
+.add-fossil-main {
   display: grid;
-  gap: 6px;
+  gap: 1.1em;
+}
+
+.add-fossil-field {
+  display: grid;
+  gap: 0.45em;
+}
+
+.add-fossil-field > span {
+  font-size: 1.8rem;
   font-weight: 600;
 }
 
-.add-fossil-form input,
-.add-fossil-form select,
-.add-fossil-form textarea {
-  border: 1px solid #d0d5dd;
-  border-radius: 10px;
-  padding: 10px 12px;
+.add-fossil-field input,
+.add-fossil-field select,
+.add-fossil-field textarea {
+  border: 0.09375em solid rgba(240, 220, 144, 0.85);
+  border-radius: 0.65em;
+  padding: 0.5em 0.75em;
   font-family: inherit;
+  font-size: 1.7rem;
+  color: #1a2238;
+  background: #ebe4d4;
 }
 
-.add-fossil-grid {
+.add-fossil-field textarea {
+  min-height: 3.5em;
+  resize: none;
+}
+
+.add-fossil-choices {
   display: grid;
-  gap: 12px;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: minmax(8em, 9em) minmax(8em, 9em) minmax(9em, 1fr);
+  gap: 1em;
+  align-items: start;
 }
 
-.add-fossil-toggle {
+.add-fossil-choice-card {
+  background: #ebe4d4;
+  color: #1a2238;
+  border: 0.09375em solid rgba(240, 220, 144, 0.85);
+  border-radius: 0.75em;
+  padding: 0.5em;
+  display: grid;
+  gap: 0.45em;
+}
+
+.add-fossil-choice-card h3 {
+  margin: 0 0 0.2em;
+  font-size: 1.7rem;
+  font-weight: 600;
+}
+
+.add-fossil-option {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 0.45em;
+  font-size: 1.1rem;
+}
+
+.add-fossil-option input[type='radio'],
+.add-fossil-option input[type='checkbox'] {
+  width: 1.1em;
+  height: 1.1em;
+  accent-color: #111722;
+}
+
+.add-fossil-field--continent {
+  align-self: start;
+}
+
+.add-fossil-side {
+  display: grid;
+  gap: 0.95em;
+  align-content: start;
+}
+
+.add-fossil-upload {
+  display: grid;
+  gap: 0.45em;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.add-fossil-dropzone {
+  border: 0.09375em dashed #f2c742;
+  border-radius: 0.75em;
+  min-height: 6.8em;
+  display: grid;
+  place-items: center;
+  padding: 0.8em;
+  background: rgba(24, 36, 64, 0.55);
+  cursor: pointer;
+}
+
+.add-fossil-dropzone .material-symbols-outlined {
+  font-size: 2rem;
+  color: #f2e9c9;
+}
+
+.add-fossil-dropzone p {
+  margin: 0.2em 0 0;
+  font-size: 1rem;
+  text-align: center;
+  color: #f2e9c9;
 }
 
 .add-fossil-upload input[type='file'] {
-  padding: 6px 0 0;
+  position: absolute;
+  opacity: 0;
+  width: 0.0625em;
+  height: 0.0625em;
+  pointer-events: none;
 }
 
 .add-fossil-preview {
-  border-radius: 16px;
-  overflow: hidden;
-  border: 1px solid #e2e8f0;
+  display: grid;
+  gap: 0.45em;
 }
 
-.add-fossil-preview img {
+.add-fossil-preview h3 {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.add-fossil-preview .fossil-card-more {
+  display: none;
+}
+
+.add-fossil-preview .fossil-card {
+  max-width: 18em;
+}
+
+.add-fossil-error {
+  margin: 0;
+  color: #ff8f8f;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.add-fossil-submit {
+  border: 0;
+  background: var(--accent);
+  color: #f5f6ff;
+  padding: 0.65em 1.3em;
+  border-radius: 999em;
+  font-size: 1.7rem;
+  font-weight: 700;
+  cursor: pointer;
+  justify-self: start;
+  margin-top: 0.2em;
+}
+
+.add-fossil-submit:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.fossil-detail-page {
+  min-height: calc(100vh - 7rem);
+  background: var(--bg-main);
+  color: var(--soft-light);
+  padding: 1.25em 6.25em 2.25em;
+}
+
+.fossil-detail-top {
+  display: grid;
+  grid-template-columns: minmax(20em, 28em) minmax(0, 1fr);
+  gap: 1.375em;
+  align-items: start;
+}
+
+.fossil-detail-image-wrap {
+  border: 0.125em solid #7f56d9;
+  box-shadow: 0 0.625em 1.25em rgba(8, 13, 26, 0.3);
+}
+
+.fossil-detail-image {
   width: 100%;
   display: block;
-  max-height: 320px;
+  aspect-ratio: 16 / 10;
   object-fit: cover;
 }
 
+.fossil-detail-meta {
+  margin: 0;
+  padding: 0.875em 0 0;
+  list-style: none;
+  display: grid;
+  gap: 1.25em;
+  font-size: clamp(1.35rem, 2vw, 2rem);
+  font-weight: 600;
+}
+
+.fossil-detail-meta li {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.fossil-detail-meta .material-symbols-outlined {
+  font-size: 1.6em;
+  color: #f3b14a;
+}
+
+.fossil-detail-description {
+  margin-top: 1.5em;
+}
+
+.fossil-detail-description h2 {
+  margin: 0 0 0.4em;
+  font-size: clamp(2rem, 3.5vw, 3.25rem);
+}
+
+.fossil-detail-description h3 {
+  margin: 0;
+  font-size: clamp(1.5rem, 2.6vw, 2.3rem);
+}
+
+.fossil-detail-description p {
+  margin: 0.625em 0 0;
+  font-size: 1.1rem;
+  line-height: 1.55;
+}
+
 @media (max-width: 900px) {
-  .app-layout {
-    flex-direction: column;
+  .add-fossil-page {
+    padding: 1em;
   }
 
-  .sidebar {
-    width: 100%;
-    border-right: 0;
-    border-bottom: 1px solid #dde3ec;
+  .add-fossil-form {
+    grid-template-columns: 1fr;
+    gap: 1.5em;
   }
 
-  .content-head,
-  .content-main {
-    padding-left: 16px;
-    padding-right: 16px;
+  .add-fossil-choices {
+    grid-template-columns: 1fr;
+  }
+
+  .add-fossil-preview .fossil-card {
+    max-width: 100%;
+  }
+
+  .fossil-detail-top {
+    grid-template-columns: 1fr;
   }
 }
+

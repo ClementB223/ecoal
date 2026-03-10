@@ -42,7 +42,11 @@ export default function Navbar() {
         </div>
 
         <div className="navbar-center">
-          <NavLink to="/" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>
+          <NavLink
+            to="/"
+            end
+            className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}
+          >
             Home
           </NavLink>
           <NavLink
