@@ -76,13 +76,12 @@ export default function AddFossils() {
       formData.append('preservation', preservation);
       formData.append('is_public', isPublic ? '1' : '0');
       if (imageFile) {
-        formData.append('image', imageFile);
+        formData.append('image', imageFile, imageFile.name);
       }
 
       await axios.post(`${API_BASE_URL}/api/my-fossils`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data',
         },
       });
 
