@@ -13,6 +13,14 @@ body {
   background: #f5f7fb;
 }
 
+a{
+  text-decoration: none;
+}
+
+a:visited {
+  color: black;
+}
+
 .app-layout {
   display: flex;
   min-height: 100vh;
