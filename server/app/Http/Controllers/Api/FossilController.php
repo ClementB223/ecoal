@@ -11,6 +11,37 @@ use Illuminate\Http\Request;
 
 class FossilController extends Controller
 {
+    private function isLocalUploadPath(?string $path): bool
+    {
+        return is_string($path)
+            && str_starts_with($path, 'uploads/')
+            && ! preg_match('/^https?:\/\//i', $path);
+    }
+
+    private function deleteLocalImage(?string $path): void
+    {
+        if (! $this->isLocalUploadPath($path)) {
+            return;
+        }
+
+        $absolutePath = public_path($path);
+        if (file_exists($absolutePath)) {
+            unlink($absolutePath);
+        }
+    }
+
+    private function saveUploadedImage(Request $request): ?string
+    {
+        if (! $request->hasFile('image')) {
+            return null;
+        }
+
+        $fileName = $request->file('image')->hashName();
+        $request->file('image')->move(public_path('uploads'), $fileName);
+
+        return 'uploads/' . $fileName;
+    }
+
     
     public function index(Request $request)
     {
@@ -92,16 +123,16 @@ class FossilController extends Controller
             'preservation'   => 'required|integer|min:1|max:5',
             'is_public'      => 'required|boolean',
             'image'          => 'nullable|file|mimes:jpg,jpeg,png,webp|max:5120',
+            'image_url'      => 'nullable|url|max:2048',
         ]);
 
         $collection = Collection::where('user_id', $request->user()->id)->firstOrFail();
         $era        = GeologicalEra::where('name', $request->geological_era)->firstOrFail();
 
-        $imagePath = null;
-        if ($request->hasFile('image')) {
-            $fileName  = $request->file('image')->hashName();
-            $request->file('image')->move(public_path('uploads'), $fileName);
-            $imagePath = 'uploads/' . $fileName;
+        $imagePath = $request->input('image_url');
+        $uploadedImagePath = $this->saveUploadedImage($request);
+        if ($uploadedImagePath) {
+            $imagePath = $uploadedImagePath;
         }
 
         $fossil = Fossil::create([
@@ -141,6 +172,7 @@ class FossilController extends Controller
             'preservation'   => 'sometimes|integer|min:1|max:5',
             'is_public'      => 'sometimes|boolean',
             'image'          => 'nullable|file|mimes:jpg,jpeg,png,webp|max:5120',
+            'image_url'      => 'nullable|url|max:2048',
         ]);
 
         
@@ -149,13 +181,15 @@ class FossilController extends Controller
             $fossil->geological_era_id = $era->id;
         }
 
-        if ($request->hasFile('image')) {
-            if ($fossil->image_path && file_exists(public_path($fossil->image_path))) {
-                unlink(public_path($fossil->image_path));
-            }
-            $fileName          = $request->file('image')->hashName();
-            $request->file('image')->move(public_path('uploads'), $fileName);
-            $fossil->image_path = 'uploads/' . $fileName;
+        if ($request->has('image_url')) {
+            $this->deleteLocalImage($fossil->image_path);
+            $fossil->image_path = $request->input('image_url') ?: null;
+        }
+
+        $uploadedImagePath = $this->saveUploadedImage($request);
+        if ($uploadedImagePath) {
+            $this->deleteLocalImage($fossil->image_path);
+            $fossil->image_path = $uploadedImagePath;
         }
 
         $fossil->fill($request->only('name', 'description', 'is_public'));
@@ -175,9 +209,7 @@ class FossilController extends Controller
         $collection = Collection::where('user_id', $request->user()->id)->firstOrFail();
         $fossil     = Fossil::where('collection_id', $collection->id)->findOrFail($id);
 
-        if ($fossil->image_path && file_exists(public_path($fossil->image_path))) {
-            unlink(public_path($fossil->image_path));
-        }
+        $this->deleteLocalImage($fossil->image_path);
 
         $fossil->delete();
 
