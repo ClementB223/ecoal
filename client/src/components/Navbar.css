@@ -27,10 +27,10 @@
 
 .navbar-center {
   display: flex;
-  gap: 1rem;
+  gap: 0.5rem;
   justify-content: center;
   background-color: #ffffff;
-  padding: 1rem;
+  padding: 0.5rem;
   border-radius: 2rem;
 }
 
@@ -49,13 +49,29 @@
   text-decoration: none;
   font-weight: 600;
   color: #1f1f1f;
+  background-color: #ffff;
+  padding: 6px;
+  border-radius: 999px;
 }
 
-.nav-link:focus {
-    text-decoration: none;
-    font-weight: 600;
-    background-color: #1f1f1f;
+.nav-link:hover {
+  text-decoration: none;
+  color: #2f3f67;
+  font-weight: 600;
+  background-color: gray;
+  border-radius: 99px;
+  padding: 6px;
 }
+
+.nav-link a.active {
+    text-decoration: none;
+    color: #1f1f1f;
+    font-weight: 600;
+    background-color: gray;
+    border-radius: 99px;
+    padding: 6px;
+}
+
 
 .profile-toggle {
   border: 1px solid #1f1f1f;
