@@ -1,0 +1,80 @@
+.register-page {
+    min-height: calc(100vh - 112px);
+    display: grid;
+    place-items: center;
+    padding: 32px 16px 64px;
+}
+
+.register-card {
+    width: min(520px, 95vw);
+    background: #ffffff;
+    padding: 28px 32px;
+    border-radius: 16px;
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.12);
+}
+
+.register-card h1 {
+    margin-top: 0;
+}
+
+.register-form {
+    display: grid;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.register-form label {
+    display: grid;
+    gap: 6px;
+    font-weight: 600;
+}
+
+.register-form input {
+    border: 1px solid #d0d5dd;
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-family: inherit;
+}
+
+.register-footer {
+    margin-top: 16px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    font-weight: 600;
+}
+
+/* réutilisé du login */
+.modal-error {
+    color: #b42318;
+    font-weight: 600;
+    margin: 0;
+}
+
+.modal-submit {
+    border: none;
+    background: #1f2937;
+    color: #ffffff;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.modal-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.login-link {
+    color: black;
+    font-size: 0.9rem;
+    font-weight: 300;
+    text-decoration: underline;
+    font-style: italic;
+}
+
+.login-link:hover {
+    color: #2f3f67;
+    cursor: pointer;
+}

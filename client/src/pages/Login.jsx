@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { login } from '../services/AuthServices';
-import '../App.css';
+import './Login.css';
 
 export default function LoginModal({ isOpen = false, onClose, onSuccess }) {
   const [email, setEmail] = useState('');
@@ -77,8 +77,8 @@ export default function LoginModal({ isOpen = false, onClose, onSuccess }) {
       </form>
 
       <div className="modal-footer">
-        <span>Don’t have an account?</span>
-        <Link to="/register" onClick={handleRegister} className="modal-link">
+        <span>Don't have an account?</span>
+        <Link to="/register" onClick={handleRegister} className="login-link">
           Register
         </Link>
       </div>

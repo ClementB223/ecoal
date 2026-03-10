@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { register } from '../services/AuthServices';
-import '../App.css';
+import './Register.css';
 
 export default function Register() {
   const [name, setName] = useState('');
@@ -91,7 +91,7 @@ export default function Register() {
 
         <div className="register-footer">
           <span>Already have an account?</span>
-          <Link to="/login" className="modal-link" onClick={() => navigate('/login')}>
+          <Link to="/login" className="login-link" onClick={() => navigate('/login')}>
             Login
           </Link>
         </div>

@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { logout } from '../services/AuthServices';
-import '../App.css';
-
+import './Profile.css';
 export default function ProfilePopover({ isOpen = false, onClose, user, onLogout }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -48,9 +47,15 @@ export default function ProfilePopover({ isOpen = false, onClose, user, onLogout
       </div>
 
       <div className="modal-footer">
-        <span>Signed in as {user?.email || 'user'}</span>
+        <span>Signed in as {user?.name || 'user'}</span>
         <button type="button" className="modal-link" onClick={handleLogout} disabled={isSubmitting}>
-          {isSubmitting ? 'Signing out...' : 'Logout'}
+          {isSubmitting ? (
+            'Signing out...'
+          ) : (
+            <span className="material-symbols-outlined">
+              logout
+            </span>
+          )}
         </button>
       </div>
     </div>
