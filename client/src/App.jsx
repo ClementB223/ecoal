@@ -1,7 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './App.css';
 import Navbar from './components/Navbar';
+import LoginModal from './pages/Login';
+import Register from './pages/Register';
+import AddFossils from './pages/AddFossils';
 
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000').replace(
   /\/$/,
@@ -19,14 +23,14 @@ const mapFossil = (fossil) => {
   return {
     id: String(fossil?.id ?? ''),
     name: fossil?.name ?? 'Unknown fossil',
-    scientificName: fossil?.scientific_name ?? fossil?.scientificName ?? '—',
+    scientificName: fossil?.scientific_name ?? fossil?.scientificName ?? '--',
     geologicalArea: fossil?.geological_area ?? fossil?.geologicalArea ?? 'Unknown',
-    dateFound: fossil?.date_found ?? fossil?.dateFound ?? '—',
-    size: sizeCm ? `${sizeCm} cm` : '—',
+    dateFound: fossil?.date_found ?? fossil?.dateFound ?? '--',
+    size: sizeCm ? `${sizeCm} cm` : '--',
     sizeInCm: Number.isFinite(sizeCm) ? sizeCm : 0,
     era: geologicalEra?.name ?? 'Unknown',
-    period: fossil?.period ?? geologicalEra?.name ?? '—',
-    type: fossil?.type ?? '—',
+    period: fossil?.period ?? geologicalEra?.name ?? '--',
+    type: fossil?.type ?? '--',
     image: imagePath ? `${API_BASE_URL}/${imagePath}` : FALLBACK_IMAGE,
     description: fossil?.description ?? '',
   };
@@ -192,7 +196,7 @@ function FilterSidebar({
   );
 }
 
-export default function App() {
+function HomePage() {
   const [fossils, setFossils] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
@@ -282,10 +286,7 @@ export default function App() {
   };
 
   return (
-    <>
-      <Navbar />
-      <div className="app-layout">
-      
+    <div className="app-layout">
       <FilterSidebar
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
@@ -334,7 +335,25 @@ export default function App() {
           )}
         </main>
       </section>
-      </div>
+    </div>
+  );
+}
+
+function LoginRoute() {
+  const navigate = useNavigate();
+  return <LoginModal isOpen onClose={() => navigate('/')} />;
+}
+
+export default function App() {
+  return (
+    <>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/login" element={<LoginRoute />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/add-fossil" element={<AddFossils />} />
+      </Routes>
     </>
   );
 }
