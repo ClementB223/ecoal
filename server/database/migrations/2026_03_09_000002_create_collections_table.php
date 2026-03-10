@@ -14,8 +14,6 @@ return new class extends Migration
             $table->string('name');
             $table->text('description')->nullable();
             $table->timestamps();
-
-            // Each user can only have one collection
             $table->unique('user_id');
         });
     }

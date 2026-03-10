@@ -13,10 +13,8 @@ return new class extends Migration
             $table->foreignId('fossil_id')->constrained()->onDelete('cascade');
             $table->float('size_cm');
             $table->float('age_myo');
-            $table->integer('preservation'); // 1-5 scale
+            $table->integer('preservation'); 
             $table->timestamps();
-
-            // Each fossil has exactly one criteria record
             $table->unique('fossil_id');
         });
     }

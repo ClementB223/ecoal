@@ -11,7 +11,6 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    // POST /api/register
     public function register(Request $request)
     {
         $request->validate([
@@ -26,7 +25,7 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        // Automatically create a collection for the new user
+        
         Collection::create([
             'user_id'     => $user->id,
             'name'        => $user->name . "'s Fossil Collection",
@@ -41,7 +40,7 @@ class AuthController extends Controller
         ], 201);
     }
 
-    // POST /api/login
+
     public function login(Request $request)
     {
         $request->validate([
@@ -65,7 +64,7 @@ class AuthController extends Controller
         ]);
     }
 
-    // POST /api/logout
+    
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
@@ -73,7 +72,7 @@ class AuthController extends Controller
         return response()->json(['message' => 'Logged out successfully.']);
     }
 
-    // GET /api/me
+
     public function me(Request $request)
     {
         return response()->json(

@@ -11,24 +11,13 @@ use Illuminate\Http\Request;
 
 class FossilController extends Controller
 {
-    // ---------------------------------------------------------------
-    // PUBLIC ENDPOINTS
-    // ---------------------------------------------------------------
-
-    // GET /api/fossils
-    // Returns all public fossils with optional filtering and sorting.
-    //
-    // Filter:  ?geological_era=Mesozoic
-    // Sort:    ?sort=size_cm | ?sort=-size_cm
-    //          ?sort=age_myo | ?sort=-age_myo
-    //          ?sort=preservation | ?sort=-preservation
-    // Combined: ?geological_era=Paleozoic&sort=-size_cm
+    
     public function index(Request $request)
     {
         $query = Fossil::with(['collection.user:id,name', 'geologicalEra', 'criteria'])
             ->where('is_public', true);
 
-        // Filter by geological era name
+
         if ($request->filled('geological_era')) {
             $era = GeologicalEra::where('name', $request->geological_era)->first();
             if ($era) {
@@ -36,7 +25,6 @@ class FossilController extends Controller
             }
         }
 
-        // Sort by criteria fields
         $allowedSorts = ['size_cm', 'age_myo', 'preservation'];
 
         if ($request->filled('sort')) {
@@ -58,8 +46,7 @@ class FossilController extends Controller
         return response()->json($query->get());
     }
 
-    // GET /api/fossils/{id}
-    // Returns a single public fossil
+
     public function show($id)
     {
         $fossil = Fossil::with(['collection.user:id,name', 'geologicalEra', 'criteria'])
@@ -69,8 +56,7 @@ class FossilController extends Controller
         return response()->json($fossil);
     }
 
-    // GET /api/collections/{id}/fossils
-    // Returns all public fossils of a specific collection
+    
     public function byCollection($collectionId)
     {
         $fossils = Fossil::with(['geologicalEra', 'criteria'])
@@ -81,12 +67,7 @@ class FossilController extends Controller
         return response()->json($fossils);
     }
 
-    // ---------------------------------------------------------------
-    // PROTECTED ENDPOINTS (auth:sanctum required)
-    // ---------------------------------------------------------------
 
-    // GET /api/my-fossils
-    // Returns ALL fossils (public + private) for the logged-in user
     public function myFossils(Request $request)
     {
         $collection = Collection::where('user_id', $request->user()->id)->firstOrFail();
@@ -99,8 +80,7 @@ class FossilController extends Controller
         return response()->json($fossils);
     }
 
-    // POST /api/my-fossils
-    // Add a new fossil — send as multipart/form-data to support image upload
+    
     public function store(Request $request)
     {
         $request->validate([
@@ -117,7 +97,6 @@ class FossilController extends Controller
         $collection = Collection::where('user_id', $request->user()->id)->firstOrFail();
         $era        = GeologicalEra::where('name', $request->geological_era)->firstOrFail();
 
-        // Handle image upload
         $imagePath = null;
         if ($request->hasFile('image')) {
             $fileName  = $request->file('image')->hashName();
@@ -147,8 +126,7 @@ class FossilController extends Controller
         );
     }
 
-    // POST /api/my-fossils/{id}?_method=PUT
-    // Edit a fossil — send as multipart/form-data with _method=PUT
+
     public function update(Request $request, $id)
     {
         $collection = Collection::where('user_id', $request->user()->id)->firstOrFail();
@@ -165,13 +143,12 @@ class FossilController extends Controller
             'image'          => 'nullable|file|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
 
-        // Update geological era
+        
         if ($request->filled('geological_era')) {
             $era = GeologicalEra::where('name', $request->geological_era)->firstOrFail();
             $fossil->geological_era_id = $era->id;
         }
 
-        // Handle image upload
         if ($request->hasFile('image')) {
             if ($fossil->image_path && file_exists(public_path($fossil->image_path))) {
                 unlink(public_path($fossil->image_path));
@@ -184,7 +161,6 @@ class FossilController extends Controller
         $fossil->fill($request->only('name', 'description', 'is_public'));
         $fossil->save();
 
-        // Update criteria
         $fossil->criteria()->updateOrCreate(
             ['fossil_id' => $fossil->id],
             $request->only('size_cm', 'age_myo', 'preservation')
@@ -193,8 +169,7 @@ class FossilController extends Controller
         return response()->json($fossil->load(['geologicalEra', 'criteria']));
     }
 
-    // DELETE /api/my-fossils/{id}
-    // Delete a fossil and its image
+
     public function destroy(Request $request, $id)
     {
         $collection = Collection::where('user_id', $request->user()->id)->firstOrFail();

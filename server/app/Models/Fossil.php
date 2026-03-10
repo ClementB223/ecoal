@@ -34,7 +34,6 @@ class Fossil extends Model
         return $this->hasOne(Criteria::class);
     }
 
-    // Returns full image URL for frontend
     public function getImageUrlAttribute(): ?string
     {
         return $this->image_path
