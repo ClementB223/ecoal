@@ -1,4 +1,4 @@
-:root {
+﻿:root {
   --bg-main: #2f3f67;
   --bg-panel: #1f2c4f;
   --paper: #ebe4d4;
@@ -15,7 +15,6 @@
   min-height: 100vh;
   background-color: var(--bg-main);
   background-image: url('./assets/bg.png');
-  background-repeat: no-repeat;
   background-position: top center;
   background-size: 100% auto;
 }
@@ -118,9 +117,10 @@ a:visited {
 }
 
 .hero-insights {
-  margin-top: 0.2em;
+  margin-top: 2em;
   padding: 1.05em 0 0.4em 80px;
   border-top: 0.0625em solid rgba(230, 214, 183, 0.2);
+  border-bottom: 0.0625em solid rgba(230, 214, 183, 0.2);
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1.5em;

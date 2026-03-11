@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import './Navbar.css';
-import logo from '../assets/logo.png';
+import logo from '../assets/logo2.png';
 import LoginModal from '../pages/Login';
 import ProfilePopover from '../pages/Profile';
 import { getMe } from '../services/AuthServices';

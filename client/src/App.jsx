@@ -8,6 +8,9 @@ import Register from './pages/Register';
 import AddFossils from './pages/AddFossils';
 import FossilCard from './components/FossilCard';
 import headerImage from './assets/imgheader2.png';
+import Collections from './pages/Collections';
+import CollectionDetail from './pages/CollectionDetail';
+import MyCollectionEdit from './pages/MyCollectionEdit';
 
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000').replace(
   /\/$/,
@@ -542,11 +545,13 @@ export default function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/collection" element={<HomePage />} />
         <Route path="/login" element={<LoginRoute />} />
         <Route path="/register" element={<Register />} />
         <Route path="/add-fossil" element={<AddFossils />} />
         <Route path="/fossils/:fossilId" element={<FossilDetailsPage />} />
+        <Route path="/collection" element={<Collections />} />
+        <Route path="/collection/:id" element={<CollectionDetail />} />
+        <Route path="/collection/me" element={<MyCollectionEdit />} />
       </Routes>
     </div>
   );

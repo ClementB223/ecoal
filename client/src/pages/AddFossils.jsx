@@ -223,7 +223,7 @@ export default function AddFossils() {
                 <span className="material-symbols-outlined" aria-hidden="true">
                   image
                 </span>
-                <p>Glisser et deposer ou cliquer pour uploader</p>
+                <p>Drag and drop or click to upload</p>
               </div>
               <input type="file" accept="image/*" onChange={handleImageChange} />
             </label>
