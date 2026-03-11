@@ -1,8 +1,9 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CollectionController;
 use App\Http\Controllers\Api\FossilController;
+use Illuminate\Support\Facades\Route;
 
 
 Route::post('/register', [AuthController::class, 'register']);
@@ -12,7 +13,8 @@ Route::get('/fossils',                          [FossilController::class, 'index
 Route::get('/fossils/{id}',                     [FossilController::class, 'show']);
 Route::get('/collections/{id}/fossils',         [FossilController::class, 'byCollection']);
 Route::get('/geological-eras',                  [FossilController::class, 'geologicalEras']);
-
+Route::get('/collections',                      [CollectionController::class, 'index']);
+Route::get('/collections/{id}',                 [CollectionController::class, 'show']);
 
 
 Route::middleware('auth:sanctum')->group(function () {
