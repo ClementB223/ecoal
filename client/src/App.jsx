@@ -379,7 +379,7 @@ function HomePage() {
           <header className="catalog-header">
             <p>Display {sortedFossils.length} fossils</p>
             <label>
-              Filter by :
+              Sort by :
               <select value={sortBy} onChange={(event) => setSortBy(event.target.value)}>
                 <option value="rarity">Rarety</option>
                 <option value="name">Name</option>

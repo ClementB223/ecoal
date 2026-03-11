@@ -1,0 +1,197 @@
+.add-fossil-page {
+    min-height: calc(100vh - 7rem);
+    color: var(--soft-light);
+    padding: 1.25em 2em 2em;
+}
+
+.add-fossil-shell {
+    width: min(75em, 100%);
+    margin: 0 auto;
+}
+
+.add-fossil-form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(16em, 19em);
+    gap: 3em;
+    align-items: start;
+}
+
+.add-fossil-main {
+    display: grid;
+    gap: 1.1em;
+}
+
+.add-fossil-field {
+    display: grid;
+    gap: 0.45em;
+}
+
+.add-fossil-field>span {
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+.add-fossil-field input,
+.add-fossil-field select,
+.add-fossil-field textarea {
+    border: 0.09375em solid rgba(240, 220, 144, 0.85);
+    border-radius: 0.65em;
+    padding: 0.5em 0.75em;
+    font-family: inherit;
+    font-size: 1.7rem;
+    color: #1a2238;
+    background: #ebe4d4;
+}
+
+.add-fossil-field textarea {
+    min-height: 3.5em;
+    resize: none;
+}
+
+.add-fossil-choices {
+    display: grid;
+    grid-template-columns: minmax(8em, 9em) minmax(8em, 9em) minmax(9em, 1fr);
+    gap: 1em;
+    align-items: start;
+}
+
+.add-fossil-choice-card {
+    background: #ebe4d4;
+    color: #1a2238;
+    border: 0.09375em solid rgba(240, 220, 144, 0.85);
+    border-radius: 0.75em;
+    padding: 0.5em;
+    display: grid;
+    gap: 0.45em;
+}
+
+.add-fossil-choice-card h3 {
+    margin: 0 0 0.2em;
+    font-size: 1.7rem;
+    font-weight: 600;
+}
+
+.add-fossil-option {
+    display: flex;
+    align-items: center;
+    gap: 0.45em;
+    font-size: 1.1rem;
+}
+
+.add-fossil-option input[type='radio'],
+.add-fossil-option input[type='checkbox'] {
+    width: 1.1em;
+    height: 1.1em;
+    accent-color: #111722;
+}
+
+.add-fossil-field--continent {
+    align-self: start;
+}
+
+.add-fossil-side {
+    display: grid;
+    gap: 0.95em;
+    align-content: start;
+}
+
+.add-fossil-upload {
+    display: grid;
+    gap: 0.45em;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.add-fossil-dropzone {
+    border: 0.09375em dashed #f2c742;
+    border-radius: 0.75em;
+    min-height: 6.8em;
+    display: grid;
+    place-items: center;
+    padding: 0.8em;
+    background: rgba(24, 36, 64, 0.55);
+    cursor: pointer;
+}
+
+.add-fossil-dropzone .material-symbols-outlined {
+    font-size: 2rem;
+    color: #f2e9c9;
+}
+
+.add-fossil-dropzone p {
+    margin: 0.2em 0 0;
+    font-size: 1rem;
+    text-align: center;
+    color: #f2e9c9;
+}
+
+.add-fossil-upload input[type='file'] {
+    position: absolute;
+    opacity: 0;
+    width: 0.0625em;
+    height: 0.0625em;
+    pointer-events: none;
+}
+
+.add-fossil-preview {
+    display: grid;
+    gap: 0.45em;
+}
+
+.add-fossil-preview h3 {
+    margin: 0;
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+.add-fossil-preview .fossil-card-more {
+    display: none;
+}
+
+.add-fossil-preview .fossil-card {
+    max-width: 18em;
+}
+
+.add-fossil-error {
+    margin: 0;
+    color: #ff8f8f;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.add-fossil-submit {
+    border: 0;
+    background: var(--accent);
+    color: #f5f6ff;
+    padding: 0.65em 1.3em;
+    border-radius: 999em;
+    font-size: 1.7rem;
+    font-weight: 700;
+    cursor: pointer;
+    justify-self: start;
+    margin-top: 0.2em;
+}
+
+.add-fossil-submit:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+@media (max-width: 900px) {
+    .add-fossil-page {
+        padding: 1em;
+    }
+
+    .add-fossil-form {
+        grid-template-columns: 1fr;
+        gap: 1.5em;
+    }
+
+    .add-fossil-choices {
+        grid-template-columns: 1fr;
+    }
+
+    .add-fossil-preview .fossil-card {
+        max-width: 100%;
+    }
+}
