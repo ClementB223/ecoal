@@ -1,197 +1,273 @@
 .add-fossil-page {
-    min-height: calc(100vh - 7rem);
-    color: var(--soft-light);
-    padding: 1.25em 2em 2em;
-    background:var(--main);
+  min-height: calc(100vh - 7rem);
+  color: var(--soft-light);
+  padding: 1.5rem 2.5rem 2.25rem;
+  background: transparent;
 }
 
-.add-fossil-shell {
-    width: min(75em, 100%);
-    margin: 0 auto;
+.add-fossil-page .add-fossil-shell {
+  width: min(88rem, 100%);
+  margin: 0 auto;
 }
 
-.add-fossil-form {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(16em, 19em);
-    gap: 3em;
-    align-items: start;
+.add-fossil-page .add-fossil-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(20rem, 24rem);
+  gap: 2.25rem;
+  align-items: start;
 }
 
-.add-fossil-main {
-    display: grid;
-    gap: 1.1em;
+.add-fossil-page .add-fossil-main {
+  display: grid;
+  gap: 1.1rem;
 }
 
-.add-fossil-field {
-    display: grid;
-    gap: 0.45em;
+.add-fossil-page .add-fossil-field {
+  display: grid;
+  gap: 0.5rem;
 }
 
-.add-fossil-field>span {
-    font-size: 1.8rem;
-    font-weight: 600;
+.add-fossil-page .add-fossil-field > span {
+  font-family: 'Source Sans 3', 'Segoe UI', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: #f4f6ff;
 }
 
-.add-fossil-field input,
-.add-fossil-field select,
-.add-fossil-field textarea {
-    border: 0.09375em solid rgba(240, 220, 144, 0.85);
-    border-radius: 0.65em;
-    padding: 0.5em 0.75em;
-    font-family: inherit;
-    font-size: 1.7rem;
-    color: #1a2238;
-    background: #ebe4d4;
+.add-fossil-page .add-fossil-field input,
+.add-fossil-page .add-fossil-field select,
+.add-fossil-page .add-fossil-field textarea {
+  width: 100%;
+  border: 0.09375em solid rgba(240, 220, 144, 0.85);
+  border-radius: 1.1rem;
+  padding: 0.7rem 0.95rem;
+  font-family: inherit;
+  font-size: 1rem;
+  color: #1a2238;
+  background: #ebe4d4;
 }
 
-.add-fossil-field textarea {
-    min-height: 3.5em;
-    resize: none;
+.add-fossil-page .add-fossil-field textarea {
+  min-height: 7rem;
+  resize: vertical;
 }
 
-.add-fossil-choices {
-    display: grid;
-    grid-template-columns: minmax(8em, 9em) minmax(8em, 9em) minmax(9em, 1fr);
-    gap: 1em;
-    align-items: start;
+.add-fossil-page .add-fossil-choices {
+  display: grid;
+  grid-template-columns: minmax(14rem, 16rem) minmax(13rem, 15rem) minmax(15rem, 1fr);
+  gap: 1.2rem;
+  align-items: start;
 }
 
-.add-fossil-choice-card {
-    background: #ebe4d4;
-    color: #1a2238;
-    border: 0.09375em solid rgba(240, 220, 144, 0.85);
-    border-radius: 0.75em;
-    padding: 0.5em;
-    display: grid;
-    gap: 0.45em;
+.add-fossil-page .add-fossil-choice-card {
+  background: #ebe4d4;
+  color: #1a2238;
+  border: 0.09375em solid rgba(240, 220, 144, 0.85);
+  border-radius: 1rem;
+  padding: 0.8rem;
+  display: grid;
+  gap: 0.55rem;
 }
 
-.add-fossil-choice-card h3 {
-    margin: 0 0 0.2em;
-    font-size: 1.7rem;
-    font-weight: 600;
+.add-fossil-page .add-fossil-choice-card h3 {
+  margin: 0 0 0.15rem;
+  font-family: 'Source Sans 3', 'Segoe UI', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: #13203d;
 }
 
-.add-fossil-option {
-    display: flex;
-    align-items: center;
-    gap: 0.45em;
-    font-size: 1.1rem;
+.add-fossil-page .add-fossil-choice-card--metrics {
+  align-self: stretch;
 }
 
-.add-fossil-option input[type='radio'],
-.add-fossil-option input[type='checkbox'] {
-    width: 1.1em;
-    height: 1.1em;
-    accent-color: #111722;
+.add-fossil-page .add-fossil-option {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 1rem;
 }
 
-.add-fossil-field--continent {
-    align-self: start;
+.add-fossil-page .add-fossil-option input[type='radio'],
+.add-fossil-page .add-fossil-option input[type='checkbox'] {
+  width: 1.25rem;
+  height: 1.25rem;
+  accent-color: #111722;
+  flex: 0 0 auto;
 }
 
-.add-fossil-side {
-    display: grid;
-    gap: 0.95em;
-    align-content: start;
+.add-fossil-page .add-fossil-field--continent {
+  align-self: start;
 }
 
-.add-fossil-upload {
-    display: grid;
-    gap: 0.45em;
-    font-size: 1.5rem;
-    font-weight: 600;
+.add-fossil-page .add-fossil-field--continent select {
+  min-height: 3.7rem;
 }
 
-.add-fossil-dropzone {
-    border: 0.09375em dashed #f2c742;
-    border-radius: 0.75em;
-    min-height: 6.8em;
-    display: grid;
-    place-items: center;
-    padding: 0.8em;
-    cursor: pointer;
+.add-fossil-page .add-fossil-field--compact > span {
+  font-family: 'Source Sans 3', 'Segoe UI', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #13203d;
 }
 
-.add-fossil-dropzone .material-symbols-outlined {
-    font-size: 2rem;
-    color: #f2e9c9;
+.add-fossil-page .add-fossil-field--compact input {
+  font-size: 0.98rem;
+  padding: 0.55rem 0.7rem;
+  border-radius: 0.75rem;
 }
 
-.add-fossil-dropzone p {
-    margin: 0.2em 0 0;
-    font-size: 1rem;
-    text-align: center;
-    color: #f2e9c9;
+.add-fossil-page .add-fossil-inline-unit {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.add-fossil-upload input[type='file'] {
-    position: absolute;
-    opacity: 0;
-    width: 0.0625em;
-    height: 0.0625em;
-    pointer-events: none;
+.add-fossil-page .add-fossil-inline-unit input {
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
-.add-fossil-preview {
-    display: grid;
-    gap: 0.45em;
+.add-fossil-page .add-fossil-unit {
+  min-width: 4.25rem;
+  text-align: center;
+  border: 0.09375em solid rgba(240, 220, 144, 0.85);
+  border-radius: 0.75rem;
+  padding: 0.55rem 0.7rem;
+  font-family: 'Source Sans 3', 'Segoe UI', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 800;
+  background: #ebe4d4;
+  color: #1a2238;
 }
 
-.add-fossil-preview h3 {
-    margin: 0;
-    font-size: 1.8rem;
-    font-weight: 600;
+.add-fossil-page .add-fossil-side {
+  display: grid;
+  gap: 0.95rem;
+  align-content: start;
 }
 
-.add-fossil-preview .fossil-card-more {
-    display: none;
+.add-fossil-page .add-fossil-upload {
+  display: grid;
+  gap: 0.5rem;
+  font-family: 'Source Sans 3', 'Segoe UI', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
 }
 
-.add-fossil-preview .fossil-card {
-    max-width: 18em;
+.add-fossil-page .add-fossil-dropzone {
+  border: 0.09375em dashed #f2c742;
+  border-radius: 1rem;
+  min-height: 10.5rem;
+  display: grid;
+  place-items: center;
+  padding: 0.95rem;
+  background: rgba(24, 36, 64, 0.42);
+  cursor: pointer;
 }
 
-.add-fossil-error {
-    margin: 0;
-    color: #ff8f8f;
-    font-size: 1rem;
-    font-weight: 600;
+.add-fossil-page .add-fossil-dropzone .material-symbols-outlined {
+  font-size: 2.25rem;
+  color: #f2e9c9;
 }
 
-.add-fossil-submit {
-    border: 0;
-    background: var(--accent);
-    color: #f5f6ff;
-    padding: 0.65em 1.3em;
-    border-radius: 999em;
-    font-size: 1.7rem;
-    font-weight: 700;
-    cursor: pointer;
-    justify-self: start;
-    margin-top: 0.2em;
+.add-fossil-page .add-fossil-dropzone p {
+  margin: 0.25rem 0 0;
+  font-family: 'Source Sans 3', 'Segoe UI', sans-serif;
+  font-size: 1rem;
+  text-align: center;
+  color: #f2e9c9;
 }
 
-.add-fossil-submit:disabled {
-    opacity: 0.65;
-    cursor: not-allowed;
+.add-fossil-page .add-fossil-upload input[type='file'] {
+  position: absolute;
+  opacity: 0;
+  width: 0.0625rem;
+  height: 0.0625rem;
+  pointer-events: none;
+}
+
+.add-fossil-page .add-fossil-preview {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.add-fossil-page .add-fossil-preview h3 {
+  margin: 0;
+  font-family: 'Source Sans 3', 'Segoe UI', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+.add-fossil-page .add-fossil-preview .fossil-card-more {
+  display: none;
+}
+
+.add-fossil-page .add-fossil-preview .fossil-card {
+  width: 100%;
+  max-width: 22rem;
+}
+
+.add-fossil-page .add-fossil-preview .fossil-card-body h3 {
+  font-family: 'Source Sans 3', 'Segoe UI', sans-serif;
+  letter-spacing: 0;
+}
+
+.add-fossil-page .add-fossil-error {
+  margin: 0;
+  color: #ff8f8f;
+  font-family: 'Source Sans 3', 'Segoe UI', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.add-fossil-page .add-fossil-submit {
+  border: 0;
+  background: var(--accent);
+  color: #f5f6ff;
+  padding: 0.72rem 1.45rem;
+  border-radius: 999rem;
+  font-family: 'Source Sans 3', 'Segoe UI', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 800;
+  cursor: pointer;
+  justify-self: start;
+  margin-top: 0.35rem;
+}
+
+.add-fossil-page .add-fossil-submit:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+@media (max-width: 1200px) {
+  .add-fossil-page .add-fossil-choices {
+    grid-template-columns: minmax(13rem, 1fr) minmax(13rem, 1fr);
+  }
+
+  .add-fossil-page .add-fossil-field--continent {
+    grid-column: 1 / -1;
+  }
 }
 
 @media (max-width: 900px) {
-    .add-fossil-page {
-        padding: 1em;
-    }
+  .add-fossil-page {
+    padding: 1rem;
+  }
 
-    .add-fossil-form {
-        grid-template-columns: 1fr;
-        gap: 1.5em;
-    }
+  .add-fossil-page .add-fossil-form {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
 
-    .add-fossil-choices {
-        grid-template-columns: 1fr;
-    }
+  .add-fossil-page .add-fossil-choices {
+    grid-template-columns: 1fr;
+  }
 
-    .add-fossil-preview .fossil-card {
-        max-width: 100%;
-    }
+  .add-fossil-page .add-fossil-preview .fossil-card {
+    max-width: 100%;
+  }
 }

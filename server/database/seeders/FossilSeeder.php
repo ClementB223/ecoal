@@ -34,6 +34,7 @@ class FossilSeeder extends Seeder
             'size_cm' => 10,
             'age_myo' => 170,
             'preservation' => 4,
+            'continent' => 'Europe',
         ]);
 
         $fossil = Fossil::create([
@@ -49,6 +50,7 @@ class FossilSeeder extends Seeder
             'size_cm' => 12,
             'age_myo' => 165,
             'preservation' => 5,
+            'continent' => 'Europe',
         ]);
 
         $fossil = Fossil::create([
@@ -64,6 +66,7 @@ class FossilSeeder extends Seeder
             'size_cm' => 14,
             'age_myo' => 160,
             'preservation' => 4,
+            'continent' => 'Europe',
         ]);
 
         $fossil = Fossil::create([
@@ -79,6 +82,7 @@ class FossilSeeder extends Seeder
             'size_cm' => 16,
             'age_myo' => 155,
             'preservation' => 5,
+            'continent' => 'Europe',
         ]);
 
         $fossil = Fossil::create([
@@ -94,6 +98,7 @@ class FossilSeeder extends Seeder
             'size_cm' => 7,
             'age_myo' => 520,
             'preservation' => 4,
+            'continent' => 'Europe',
         ]);
 
         $fossil = Fossil::create([
@@ -109,6 +114,7 @@ class FossilSeeder extends Seeder
             'size_cm' => 8,
             'age_myo' => 500,
             'preservation' => 5,
+            'continent' => 'Europe',
         ]);
 
         $fossil = Fossil::create([
@@ -124,6 +130,7 @@ class FossilSeeder extends Seeder
             'size_cm' => 9,
             'age_myo' => 480,
             'preservation' => 4,
+            'continent' => 'Europe',
         ]);
 
         $fossil = Fossil::create([
@@ -139,6 +146,7 @@ class FossilSeeder extends Seeder
             'size_cm' => 10,
             'age_myo' => 460,
             'preservation' => 5,
+            'continent' => 'Europe',
         ]);
 
         $fossil = Fossil::create([
@@ -154,6 +162,7 @@ class FossilSeeder extends Seeder
             'size_cm' => 14,
             'age_myo' => 56,
             'preservation' => 4,
+            'continent' => 'North America',
         ]);
 
         $fossil = Fossil::create([
@@ -169,6 +178,7 @@ class FossilSeeder extends Seeder
             'size_cm' => 16,
             'age_myo' => 54,
             'preservation' => 4,
+            'continent' => 'North America',
         ]);
 
         $fossil = Fossil::create([
@@ -184,6 +194,7 @@ class FossilSeeder extends Seeder
             'size_cm' => 18,
             'age_myo' => 52,
             'preservation' => 4,
+            'continent' => 'North America',
         ]);
 
         $fossil = Fossil::create([
@@ -199,6 +210,7 @@ class FossilSeeder extends Seeder
             'size_cm' => 20,
             'age_myo' => 50,
             'preservation' => 4,
+            'continent' => 'North America',
         ]);
 
         $fossil = Fossil::create([
@@ -214,6 +226,7 @@ class FossilSeeder extends Seeder
             'size_cm' => 70,
             'age_myo' => 68,
             'preservation' => 5,
+            'continent' => 'North America',
         ]);
 
         $fossil = Fossil::create([
@@ -229,6 +242,7 @@ class FossilSeeder extends Seeder
             'size_cm' => 78,
             'age_myo' => 67,
             'preservation' => 5,
+            'continent' => 'North America',
         ]);
     }
 }

@@ -20,8 +20,8 @@ const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:800
 );
 
 const DEFAULT_DB_IMAGE = `${API_BASE_URL}/uploads/fossil-default.svg`;
-const CURRENT_YEAR = new Date().getFullYear();
-const MIN_YEAR = 1900;
+const MIN_MYO = 0;
+const MAX_MYO = 600;
 
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 
@@ -37,11 +37,6 @@ const resolveImageUrl = (value) => {
   return `${API_BASE_URL}/${String(value).replace(/^\/+/, '')}`;
 };
 
-const parseYear = (value) => {
-  const year = Number.parseInt(value, 10);
-  return Number.isNaN(year) ? null : year;
-};
-
 const mapFossil = (fossil) => {
   const criteria = fossil?.criteria || {};
   const geologicalEra = fossil?.geological_era || fossil?.geologicalEra || {};
@@ -49,27 +44,21 @@ const mapFossil = (fossil) => {
   const ageMyo = Number(criteria.age_myo ?? fossil?.age_myo ?? 0);
   const preservation = Number(criteria.preservation ?? fossil?.preservation ?? 0);
   const imagePath = fossil?.image_url || fossil?.image_path;
-  const yearFromDateFound = parseYear(fossil?.date_found ?? fossil?.dateFound);
-  const yearFromCreatedAt = fossil?.created_at ? new Date(fossil.created_at).getFullYear() : null;
-  const dateYear = yearFromDateFound ?? yearFromCreatedAt;
+  const continent = criteria.continent ?? fossil?.continent ?? fossil?.geological_area ?? null;
+  const dateFoundLabel =
+    Number.isFinite(ageMyo) && ageMyo > 0 ? `${ageMyo} MYO` : fossil?.date_found ?? 'Unknown';
 
   return {
     id: String(fossil?.id ?? ''),
     name: fossil?.name ?? 'Unknown fossil',
     description: fossil?.description ?? 'No description available.',
     era: geologicalEra?.name ?? 'Unknown',
-    dateFound: dateYear ? String(dateYear) : 'Unknown',
-    dateYear,
+    dateFound: dateFoundLabel,
     ageMyo: Number.isFinite(ageMyo) ? ageMyo : 0,
     sizeCm: Number.isFinite(sizeCm) ? sizeCm : 0,
     sizeLabel: Number.isFinite(sizeCm) && sizeCm > 0 ? `${sizeCm} cm` : 'Unknown',
     preservation: Number.isFinite(preservation) ? preservation : 0,
-    location:
-      fossil?.geological_area ??
-      fossil?.geologicalArea ??
-      fossil?.collection?.name ??
-      fossil?.collection?.user?.name ??
-      'Unknown',
+    location: continent || 'Unknown',
     image: resolveImageUrl(imagePath),
   };
 };
@@ -97,7 +86,7 @@ function HomePage() {
   const [loadError, setLoadError] = useState('');
   const [selectedEras, setSelectedEras] = useState([]);
   const [sizeCategory, setSizeCategory] = useState('all');
-  const [dateRange, setDateRange] = useState({ start: MIN_YEAR, end: CURRENT_YEAR });
+  const [ageRange, setAgeRange] = useState({ start: MIN_MYO, end: MAX_MYO });
   const [minimumQuality, setMinimumQuality] = useState(0);
   const [sortBy, setSortBy] = useState('rarity');
 
@@ -150,15 +139,14 @@ function HomePage() {
         (sizeCategory === 'medium' && fossil.sizeCm > 12 && fossil.sizeCm <= 25) ||
         (sizeCategory === 'large' && fossil.sizeCm > 25);
 
-      const matchesDate =
-        fossil.dateYear === null ||
-        (fossil.dateYear >= dateRange.start && fossil.dateYear <= dateRange.end);
+      const matchesAge =
+        fossil.ageMyo <= 0 || (fossil.ageMyo >= ageRange.start && fossil.ageMyo <= ageRange.end);
 
       const matchesQuality = minimumQuality === 0 || fossil.preservation >= minimumQuality;
 
-      return matchesEra && matchesSize && matchesDate && matchesQuality;
+      return matchesEra && matchesSize && matchesAge && matchesQuality;
     });
-  }, [fossils, selectedEras, sizeCategory, dateRange, minimumQuality]);
+  }, [fossils, selectedEras, sizeCategory, ageRange, minimumQuality]);
 
   const sortedFossils = useMemo(
     () => sortFossils(filteredFossils, sortBy),
@@ -170,18 +158,18 @@ function HomePage() {
     );
   };
 
-  const updateDateStart = (rawValue) => {
-    setDateRange((current) => {
-      const parsed = Number.parseInt(rawValue, 10);
-      const nextStart = Number.isNaN(parsed) ? current.start : clamp(parsed, MIN_YEAR, current.end);
+  const updateAgeStart = (rawValue) => {
+    setAgeRange((current) => {
+      const parsed = Number.parseFloat(rawValue);
+      const nextStart = Number.isNaN(parsed) ? current.start : clamp(parsed, MIN_MYO, current.end);
       return { ...current, start: nextStart };
     });
   };
 
-  const updateDateEnd = (rawValue) => {
-    setDateRange((current) => {
-      const parsed = Number.parseInt(rawValue, 10);
-      const nextEnd = Number.isNaN(parsed) ? current.end : clamp(parsed, current.start, CURRENT_YEAR);
+  const updateAgeEnd = (rawValue) => {
+    setAgeRange((current) => {
+      const parsed = Number.parseFloat(rawValue);
+      const nextEnd = Number.isNaN(parsed) ? current.end : clamp(parsed, current.start, MAX_MYO);
       return { ...current, end: nextEnd };
     });
   };
@@ -189,7 +177,7 @@ function HomePage() {
   const resetFilters = () => {
     setSelectedEras([]);
     setSizeCategory('all');
-    setDateRange({ start: MIN_YEAR, end: CURRENT_YEAR });
+    setAgeRange({ start: MIN_MYO, end: MAX_MYO });
     setMinimumQuality(0);
     setSortBy('rarity');
   };
@@ -320,37 +308,37 @@ function HomePage() {
           </div>
 
           <div className="filter-group">
-            <h3>Date found</h3>
+            <h3>Age (MYO)</h3>
             <div className="range-values">
               <input
                 type="number"
-                min={MIN_YEAR}
-                max={CURRENT_YEAR}
-                value={dateRange.start}
-                onChange={(event) => updateDateStart(event.target.value)}
+                min={MIN_MYO}
+                max={MAX_MYO}
+                value={ageRange.start}
+                onChange={(event) => updateAgeStart(event.target.value)}
               />
               <input
                 type="number"
-                min={MIN_YEAR}
-                max={CURRENT_YEAR}
-                value={dateRange.end}
-                onChange={(event) => updateDateEnd(event.target.value)}
+                min={MIN_MYO}
+                max={MAX_MYO}
+                value={ageRange.end}
+                onChange={(event) => updateAgeEnd(event.target.value)}
               />
             </div>
             <div className="range-sliders">
               <input
                 type="range"
-                min={MIN_YEAR}
-                max={CURRENT_YEAR}
-                value={dateRange.start}
-                onChange={(event) => updateDateStart(event.target.value)}
+                min={MIN_MYO}
+                max={MAX_MYO}
+                value={ageRange.start}
+                onChange={(event) => updateAgeStart(event.target.value)}
               />
               <input
                 type="range"
-                min={MIN_YEAR}
-                max={CURRENT_YEAR}
-                value={dateRange.end}
-                onChange={(event) => updateDateEnd(event.target.value)}
+                min={MIN_MYO}
+                max={MAX_MYO}
+                value={ageRange.end}
+                onChange={(event) => updateAgeEnd(event.target.value)}
               />
             </div>
           </div>

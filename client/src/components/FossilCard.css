@@ -25,7 +25,8 @@
   right: 0.5em;
   border: 0;
   border-radius: 999em;
-  background: var(--bg-panel);;
+  background: var(--bg-panel);
+  ;
   color: #ffffff;
   font-size: 0.87rem;
   font-weight: 700;
