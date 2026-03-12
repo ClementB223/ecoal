@@ -69,6 +69,8 @@
   margin: 0;
   font-size: clamp(2.1rem, 3.2vw, 3rem);
   line-height: 1.05;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .fossil-detail-lead {
@@ -77,6 +79,8 @@
   color: #2b3446;
   font-style: italic;
   line-height: 1.45;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .fossil-detail-divider {
@@ -141,6 +145,8 @@
   font-size: 1.05rem;
   line-height: 1.6;
   color: #d6c7a8;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 @media (max-width: 900px) {

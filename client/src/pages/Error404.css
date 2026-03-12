@@ -1,0 +1,47 @@
+.error404-page {
+  min-height: calc(100vh - 7rem);
+  display: grid;
+  place-items: center;
+  padding: 2rem 1rem;
+}
+
+.error404-card {
+  width: min(36rem, 100%);
+  border: 0.125rem solid rgba(240, 220, 144, 0.85);
+  border-radius: 1rem;
+  background: rgba(16, 27, 51, 0.55);
+  color: #f3f5ff;
+  text-align: center;
+  padding: 2rem 1.5rem;
+  box-shadow: 0 0.75rem 1.5rem rgba(8, 13, 26, 0.35);
+}
+
+.error404-code {
+  margin: 0;
+  font-size: clamp(2.2rem, 7vw, 4rem);
+  font-weight: 800;
+  color: #ead4a6;
+  line-height: 1;
+}
+
+.error404-card h1 {
+  margin: 0.5rem 0 0;
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
+}
+
+.error404-card > p {
+  margin: 0.75rem 0 0;
+  font-size: 1.05rem;
+}
+
+.error404-home-btn {
+  margin-top: 1.3rem;
+  display: inline-block;
+  border-radius: 999rem;
+  background: var(--accent);
+  color: #f6f7ff;
+  font-weight: 700;
+  text-decoration: none;
+  padding: 0.62rem 1.2rem;
+}
+

@@ -58,12 +58,14 @@ export default function Navbar() {
         </div>
 
         <div className="navbar-right">
-          <NavLink to="/add-fossil" className="add-fossil-button">
-            <span className="material-symbols-outlined" aria-hidden="true">
-              add
-            </span>
-            <span>Add</span>
-          </NavLink>
+          {user ? (
+            <NavLink to="/add-fossil" className="add-fossil-button">
+              <span className="material-symbols-outlined" aria-hidden="true">
+                add
+              </span>
+              <span>Add</span>
+            </NavLink>
+          ) : null}
           <button
             type="button"
             className="profile-toggle"

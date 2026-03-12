@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './App.css';
 import './styles/responsive/responsive.css';
@@ -14,6 +14,7 @@ import Collections from './pages/Collections';
 import CollectionDetail from './pages/CollectionDetail';
 import MyCollectionEdit from './pages/MyCollectionEdit';
 import FossilDetail from './components/FossilDetail';
+import Error404 from './pages/Error404';
 
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000').replace(
   /\/$/,
@@ -428,6 +429,8 @@ function LoginRoute() {
 }
 
 export default function App() {
+  const isAuthenticated = Boolean(localStorage.getItem('token'));
+
   return (
     <div className="app-surface">
       <Navbar />
@@ -435,12 +438,15 @@ export default function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginRoute />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/add-fossil" element={<AddFossils />} />
+        <Route
+          path="/add-fossil"
+          element={isAuthenticated ? <AddFossils /> : <Navigate to="/login" replace />}
+        />
         <Route path="/fossils/:fossilId" element={<FossilDetail />} />
         <Route path="/collection" element={<Collections />} />
         <Route path="/collection/:id" element={<CollectionDetail />} />
         <Route path="/collection/me" element={<MyCollectionEdit />} />
-        <Route path="*" element={<div className="status-box">Page not found.</div>} />
+        <Route path="*" element={<Error404 />} />
       </Routes>
       <Footer />
     </div>
