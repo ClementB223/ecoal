@@ -531,72 +531,6 @@ a:visited {
   cursor: not-allowed;
 }
 
-.fossil-detail-page {
-  min-height: calc(100vh - 7rem);
-  background: var(--bg-main);
-  color: var(--soft-light);
-  padding: 1.25em 6.25em 2.25em;
-}
-
-.fossil-detail-top {
-  display: grid;
-  grid-template-columns: minmax(20em, 28em) minmax(0, 1fr);
-  gap: 1.375em;
-  align-items: start;
-}
-
-.fossil-detail-image-wrap {
-  border: 0.125em solid #7f56d9;
-  box-shadow: 0 0.625em 1.25em rgba(8, 13, 26, 0.3);
-}
-
-.fossil-detail-image {
-  width: 100%;
-  display: block;
-  aspect-ratio: 16 / 10;
-  object-fit: cover;
-}
-
-.fossil-detail-meta {
-  margin: 0;
-  padding: 0.875em 0 0;
-  list-style: none;
-  display: grid;
-  gap: 1.25em;
-  font-size: clamp(1.35rem, 2vw, 2rem);
-  font-weight: 600;
-}
-
-.fossil-detail-meta li {
-  display: flex;
-  align-items: center;
-  gap: 0.5em;
-}
-
-.fossil-detail-meta .material-symbols-outlined {
-  font-size: 1.6em;
-  color: #f3b14a;
-}
-
-.fossil-detail-description {
-  margin-top: 1.5em;
-}
-
-.fossil-detail-description h2 {
-  margin: 0 0 0.4em;
-  font-size: clamp(2rem, 3.5vw, 3.25rem);
-}
-
-.fossil-detail-description h3 {
-  margin: 0;
-  font-size: clamp(1.5rem, 2.6vw, 2.3rem);
-}
-
-.fossil-detail-description p {
-  margin: 0.625em 0 0;
-  font-size: 1.1rem;
-  line-height: 1.55;
-}
 
 @media (max-width: 900px) {
   .add-fossil-page {
@@ -616,8 +550,4 @@ a:visited {
     max-width: 100%;
   }
 
-  .fossil-detail-top {
-    grid-template-columns: 1fr;
-  }
 }
-

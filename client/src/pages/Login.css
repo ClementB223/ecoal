@@ -42,6 +42,78 @@
   z-index: 1200;
 }
 
+/* Match the edit profile popover art direction */
+.login-panel--popover {
+  background: #ffffff;
+  color: #1f2937;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.2);
+  border-radius: 14px;
+  padding: 16px;
+}
+
+.login-panel--popover .login-panel-header {
+  margin-bottom: 12px;
+}
+
+.login-panel--popover .login-panel-header h2 {
+  margin: 0;
+}
+
+.login-panel--popover .login-panel-close {
+  background: #eef2ff;
+  color: #1f2937;
+  border-radius: 999px;
+  padding: 6px 12px;
+}
+
+.login-panel--popover .login-panel-body {
+  gap: 12px;
+}
+
+.login-panel--popover .login-panel-field {
+  gap: 6px;
+  color: #1f2937;
+}
+
+.login-panel--popover .login-panel-field input {
+  border: 1px solid #d0d5dd;
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: #ffffff;
+}
+
+.login-panel--popover .login-panel-error {
+  color: #b42318;
+  font-weight: 600;
+}
+
+.login-panel--popover .login-panel-submit {
+  background: #1f2937;
+  color: #ffffff;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 700;
+  width: 100%;
+}
+
+.login-panel--popover .login-panel-footer {
+  margin-top: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.login-panel--popover .login-switch-link {
+  color: #1f2937;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: underline;
+  font-style: normal;
+}
+
 .login-panel--page {
   margin: 1.2em auto 0;
   width: min(22.5em, 100%);

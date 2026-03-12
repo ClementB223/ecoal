@@ -47,9 +47,6 @@ export default function Register() {
         </header>
 
         <div className="register-card">
-          <h2>Create account</h2>
-          <p>Join Ecoal to access your collections.</p>
-
           <form onSubmit={handleSubmit} className="register-form">
             <label>
               Name

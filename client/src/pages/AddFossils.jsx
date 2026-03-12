@@ -142,6 +142,7 @@ export default function AddFossils() {
 
   return (
     <div className="add-fossil-page">
+      <h1>Add a Fossil in your own collection</h1>
       <div className="add-fossil-shell">
         <form className="add-fossil-form" onSubmit={handleSubmit}>
           <div className="add-fossil-main">

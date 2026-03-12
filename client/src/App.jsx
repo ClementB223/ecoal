@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Routes, Route, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './App.css';
 import './styles/responsive/responsive.css';
@@ -13,6 +13,7 @@ import headerImage from './assets/imgheader2.png';
 import Collections from './pages/Collections';
 import CollectionDetail from './pages/CollectionDetail';
 import MyCollectionEdit from './pages/MyCollectionEdit';
+import FossilDetail from './components/FossilDetail';
 
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000').replace(
   /\/$/,
@@ -35,6 +36,14 @@ const resolveImageUrl = (value) => {
   }
 
   return `${API_BASE_URL}/${String(value).replace(/^\/+/, '')}`;
+};
+
+const formatAgeLabel = (ageMyo) => {
+  return Number.isFinite(ageMyo) && ageMyo > 0 ? `${ageMyo} MYO` : 'Unknown';
+};
+
+const formatPreservationLabel = (preservation) => {
+  return Number.isFinite(preservation) && preservation > 0 ? `${preservation}/5` : 'Unknown';
 };
 
 const mapFossil = (fossil) => {
@@ -388,137 +397,27 @@ function HomePage() {
             ) : (
               <div className="cards-grid">
                 {sortedFossils.map((fossil) => (
-                  <FossilCard key={fossil.id} fossil={fossil} onMoreClick={openFossilDetails} />
+                  <FossilCard
+                    key={fossil.id}
+                    fossil={fossil}
+                    onMoreClick={openFossilDetails}
+                    meta={[
+                      { icon: 'straighten', label: 'Size :', value: fossil.sizeLabel },
+                      { icon: 'hourglass_top', label: 'Age :', value: formatAgeLabel(fossil.ageMyo) },
+                      {
+                        icon: 'star',
+                        label: 'Preservation :',
+                        value: formatPreservationLabel(fossil.preservation),
+                      },
+                      { icon: 'layers', label: 'Era :', value: fossil.era },
+                    ]}
+                  />
                 ))}
               </div>
             )}
           </div>
         </section>
       </section>
-    </div>
-  );
-}
-
-function FossilDetailsPage() {
-  const { fossilId } = useParams();
-  const location = useLocation();
-  const [fossil, setFossil] = useState(location.state?.fossil || null);
-  const [isLoading, setIsLoading] = useState(!location.state?.fossil);
-  const [loadError, setLoadError] = useState('');
-
-  useEffect(() => {
-    if (!fossilId) return;
-
-    let isMounted = true;
-
-    const loadFossilDetails = async () => {
-      setIsLoading(true);
-      setLoadError('');
-
-      try {
-        const detailsResponse = await axios.get(`${API_BASE_URL}/api/fossils/${fossilId}`);
-        const detailsData = detailsResponse?.data;
-
-        if (isMounted && detailsData && !Array.isArray(detailsData)) {
-          setFossil(mapFossil(detailsData));
-          return;
-        }
-
-        const listResponse = await axios.get(`${API_BASE_URL}/api/fossils`);
-        const items = Array.isArray(listResponse.data) ? listResponse.data : [];
-        const matching = items.find((item) => String(item?.id) === String(fossilId));
-
-        if (isMounted) {
-          if (matching) {
-            setFossil(mapFossil(matching));
-          } else {
-            setLoadError('Fossil not found.');
-          }
-        }
-      } catch {
-        try {
-          const listResponse = await axios.get(`${API_BASE_URL}/api/fossils`);
-          const items = Array.isArray(listResponse.data) ? listResponse.data : [];
-          const matching = items.find((item) => String(item?.id) === String(fossilId));
-
-          if (isMounted) {
-            if (matching) {
-              setFossil(mapFossil(matching));
-            } else {
-              setLoadError('Fossil not found.');
-            }
-          }
-        } catch (error) {
-          if (isMounted) {
-            setLoadError(
-              error?.response?.data?.message || error?.message || 'Unable to load fossil details.',
-            );
-          }
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
-      }
-    };
-
-    loadFossilDetails();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [fossilId]);
-
-  return (
-    <div className="fossil-detail-page">
-      {isLoading ? (
-        <div className="status-box">Loading fossil details...</div>
-      ) : loadError ? (
-        <div className="status-box">{loadError}</div>
-      ) : !fossil ? (
-        <div className="status-box">No fossil available.</div>
-      ) : (
-        <>
-          <section className="fossil-detail-top">
-            <div className="fossil-detail-image-wrap">
-              <img src={fossil.image} alt={fossil.name} className="fossil-detail-image" />
-            </div>
-
-            <ul className="fossil-detail-meta">
-              <li>
-                <span className="material-symbols-outlined" aria-hidden="true">
-                  history_edu
-                </span>
-                <span>{fossil.era}</span>
-              </li>
-              <li>
-                <span className="material-symbols-outlined" aria-hidden="true">
-                  hourglass_top
-                </span>
-                <span>{fossil.dateFound}</span>
-              </li>
-              <li>
-                <span className="material-symbols-outlined" aria-hidden="true">
-                  straighten
-                </span>
-                <span>{fossil.sizeLabel}</span>
-              </li>
-              <li>
-                <span className="material-symbols-outlined" aria-hidden="true">
-                  public
-                </span>
-                <span>{fossil.location}</span>
-              </li>
-            </ul>
-          </section>
-
-          <section className="fossil-detail-description">
-            <h2>{fossil.name}</h2>
-            <h3>Description</h3>
-            <p>{fossil.description}</p>
-          </section>
-        </>
-      )}
     </div>
   );
 }
@@ -537,7 +436,7 @@ export default function App() {
         <Route path="/login" element={<LoginRoute />} />
         <Route path="/register" element={<Register />} />
         <Route path="/add-fossil" element={<AddFossils />} />
-        <Route path="/fossils/:fossilId" element={<FossilDetailsPage />} />
+        <Route path="/fossils/:fossilId" element={<FossilDetail />} />
         <Route path="/collection" element={<Collections />} />
         <Route path="/collection/:id" element={<CollectionDetail />} />
         <Route path="/collection/me" element={<MyCollectionEdit />} />

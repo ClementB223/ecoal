@@ -1,6 +1,6 @@
 .register-page {
   min-height: calc(100vh - 7rem);
-  background: var(--bg-main, #2f3f67);
+  background: var(--main);
   color: var(--soft-light, #f2f5ff);
   padding: 2.25em 1em 2em;
 }
