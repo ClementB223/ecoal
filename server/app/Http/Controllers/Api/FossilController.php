@@ -11,6 +11,31 @@ use Illuminate\Http\Request;
 
 class FossilController extends Controller
 {
+    private function eraAgeRange(string $eraName): ?array
+    {
+        return match (strtolower(trim($eraName))) {
+            'cenozoic' => [0, 66],
+            'mesozoic' => [66, 252],
+            'paleozoic' => [252, 541],
+            default => null,
+        };
+    }
+
+    private function eraAgeValidationError(string $eraName, float $ageMyo): ?string
+    {
+        $range = $this->eraAgeRange($eraName);
+        if ($range === null) {
+            return null;
+        }
+
+        [$min, $max] = $range;
+        if ($ageMyo < $min || $ageMyo > $max) {
+            return "For {$eraName}, age_myo must be between {$min} and {$max}.";
+        }
+
+        return null;
+    }
+
     private function isLocalUploadPath(?string $path): bool
     {
         return is_string($path)
@@ -128,10 +153,24 @@ class FossilController extends Controller
             'size_cm'        => 'required|numeric|min:0',
             'age_myo'        => 'required|numeric|min:0',
             'preservation'   => 'required|integer|min:1|max:5',
+            'continent'      => 'required|string|max:100',
             'is_public'      => 'required|boolean',
             'image'          => 'nullable|file|mimes:jpg,jpeg,png,webp|max:5120',
             'image_url'      => 'nullable|url|max:2048',
         ]);
+
+        $ageError = $this->eraAgeValidationError(
+            (string) $request->input('geological_era'),
+            (float) $request->input('age_myo')
+        );
+        if ($ageError) {
+            return response()->json([
+                'message' => 'The given data was invalid.',
+                'errors' => [
+                    'age_myo' => [$ageError],
+                ],
+            ], 422);
+        }
 
         $collection = Collection::where('user_id', $request->user()->id)->firstOrFail();
         $era        = GeologicalEra::where('name', $request->geological_era)->firstOrFail();
@@ -156,6 +195,7 @@ class FossilController extends Controller
             'size_cm'      => $request->size_cm,
             'age_myo'      => $request->age_myo,
             'preservation' => $request->preservation,
+            'continent'    => $request->continent,
         ]);
 
         return response()->json(
@@ -177,10 +217,33 @@ class FossilController extends Controller
             'size_cm'        => 'sometimes|numeric|min:0',
             'age_myo'        => 'sometimes|numeric|min:0',
             'preservation'   => 'sometimes|integer|min:1|max:5',
+            'continent'      => 'sometimes|string|max:100',
             'is_public'      => 'sometimes|boolean',
             'image'          => 'nullable|file|mimes:jpg,jpeg,png,webp|max:5120',
             'image_url'      => 'nullable|url|max:2048',
         ]);
+
+        if ($request->has('age_myo') || $request->filled('geological_era')) {
+            $currentEraName = GeologicalEra::whereKey($fossil->geological_era_id)->value('name');
+            $effectiveEraName = (string) ($request->input('geological_era', $currentEraName) ?? '');
+
+            $currentAgeMyo = $fossil->criteria()->value('age_myo');
+            $effectiveAgeMyo = $request->has('age_myo')
+                ? (float) $request->input('age_myo')
+                : ($currentAgeMyo !== null ? (float) $currentAgeMyo : null);
+
+            if ($effectiveAgeMyo !== null && $effectiveEraName !== '') {
+                $ageError = $this->eraAgeValidationError($effectiveEraName, $effectiveAgeMyo);
+                if ($ageError) {
+                    return response()->json([
+                        'message' => 'The given data was invalid.',
+                        'errors' => [
+                            'age_myo' => [$ageError],
+                        ],
+                    ], 422);
+                }
+            }
+        }
 
         
         if ($request->filled('geological_era')) {
@@ -204,7 +267,7 @@ class FossilController extends Controller
 
         $fossil->criteria()->updateOrCreate(
             ['fossil_id' => $fossil->id],
-            $request->only('size_cm', 'age_myo', 'preservation')
+            $request->only('size_cm', 'age_myo', 'preservation', 'continent')
         );
 
         return response()->json($fossil->load(['geologicalEra', 'criteria']));

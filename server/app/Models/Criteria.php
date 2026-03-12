@@ -13,12 +13,14 @@ class Criteria extends Model
         'size_cm',
         'age_myo',
         'preservation',
+        'continent',
     ];
 
     protected $casts = [
         'size_cm'      => 'float',
         'age_myo'      => 'float',
         'preservation' => 'integer',
+        'continent'    => 'string',
     ];
 
     public function fossil()
