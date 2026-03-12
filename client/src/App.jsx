@@ -98,6 +98,7 @@ function HomePage() {
   const [ageRange, setAgeRange] = useState({ start: MIN_MYO, end: MAX_MYO });
   const [minimumQuality, setMinimumQuality] = useState(0);
   const [sortBy, setSortBy] = useState('rarity');
+  const [showScrollCue, setShowScrollCue] = useState(true);
 
   const availableEras = useMemo(() => {
     const eras = new Set(fossils.map((fossil) => fossil.era).filter(Boolean));
@@ -135,6 +136,24 @@ function HomePage() {
 
     return () => {
       isMounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    const updateScrollCue = () => {
+      const isScrollable =
+        document.documentElement.scrollHeight > window.innerHeight + 40;
+      const isAtTop = window.scrollY < 40;
+      setShowScrollCue(isScrollable && isAtTop);
+    };
+
+    updateScrollCue();
+    window.addEventListener('scroll', updateScrollCue, { passive: true });
+    window.addEventListener('resize', updateScrollCue);
+
+    return () => {
+      window.removeEventListener('scroll', updateScrollCue);
+      window.removeEventListener('resize', updateScrollCue);
     };
   }, []);
 
@@ -418,6 +437,11 @@ function HomePage() {
           </div>
         </section>
       </section>
+      {showScrollCue && (
+        <div className="scroll-cue" aria-hidden="true">
+          <span className="material-symbols-outlined">arrow_downward</span>
+        </div>
+      )}
     </div>
   );
 }

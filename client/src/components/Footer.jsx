@@ -28,8 +28,7 @@ export default function Footer() {
                 <div className="site-footer__column">
                     <h4>Collection</h4>
                     <Link to="/collection/me">My fossils</Link>
-                    <span>Era highlights</span>
-                    <span>Preservation notes</span>
+                    <Link to="/collection/me">Edit my collection</Link>
                 </div>
             </div>
 

@@ -41,14 +41,12 @@ const mapFossil = (fossil) => {
   const preservation = Number(criteria.preservation ?? fossil?.preservation ?? 0);
   const imagePath = fossil?.image_url || fossil?.image_path;
   const continent = criteria.continent ?? fossil?.continent ?? fossil?.geological_area ?? null;
-  const dateFoundLabel = fossil?.date_found ?? fossil?.dateFound ?? 'Unknown';
 
   return {
     id: String(fossil?.id ?? ''),
     name: fossil?.name ?? 'Unknown fossil',
     description: fossil?.description ?? 'No description available.',
     era: geologicalEra?.name ?? 'Unknown',
-    dateFound: dateFoundLabel,
     ageMyo: Number.isFinite(ageMyo) ? ageMyo : 0,
     sizeLabel: Number.isFinite(sizeCm) && sizeCm > 0 ? `${sizeCm} cm` : 'Unknown',
     preservation: Number.isFinite(preservation) ? preservation : 0,
@@ -162,7 +160,6 @@ export default function FossilDetail() {
     { icon: 'straighten', label: 'Size', value: fossil.sizeLabel },
     { icon: 'public', label: 'Location', value: fossil.location },
     { icon: 'star', label: 'Preservation', value: formatPreservationLabel(fossil.preservation) },
-    { icon: 'calendar_month', label: 'Found', value: fossil.dateFound },
   ];
 
   return (

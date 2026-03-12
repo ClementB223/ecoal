@@ -44,12 +44,17 @@
 
 /* Match the edit profile popover art direction */
 .login-panel--popover {
-  background: #ffffff;
-  color: #1f2937;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.2);
-  border-radius: 14px;
-  padding: 16px;
+    position: absolute;
+    top: calc(100% + 12px);
+    right: 0;
+    background: var(--paper-texture);
+    color: var(--ink, #141923);
+    border-radius: 1.15em;
+    width: 320px;
+    padding: 1.2em 1.1em 1em;
+    border: 0.125em solid rgba(13, 21, 39, 0.45);
+    box-shadow: 0 0.625em 1.25em rgba(8, 13, 26, 0.3);
+    z-index: 1200;
 }
 
 .login-panel--popover .login-panel-header {
@@ -61,8 +66,7 @@
 }
 
 .login-panel--popover .login-panel-close {
-  background: #eef2ff;
-  color: #1f2937;
+  color: #ffff;
   border-radius: 999px;
   padding: 6px 12px;
 }

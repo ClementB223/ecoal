@@ -7,11 +7,12 @@ import ProfilePopover from '../pages/Profile';
 import { getMe } from '../services/AuthServices';
 
 export default function Navbar() {
+
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState(null);
 
   const toggleMenu = () => {
-    setIsOpen((prev) => !prev);
+    setIsOpen(prev => !prev);
   };
 
   const loadUser = async () => {
@@ -28,51 +29,64 @@ export default function Navbar() {
     if (!token) return;
 
     getMe()
-      .then((me) => setUser(me))
+      .then(me => setUser(me))
       .catch(() => setUser(null));
+
   }, []);
 
   return (
     <nav className="navbar">
+
+      <div className="navbar-top">
+        <NavLink to="/" className="navbar-logo">
+          <img src={logo} alt="Logo" className="navbar-logo-image" />
+        </NavLink>
+      </div>
+
       <div className="navbar-container">
+
         <div className="navbar-left">
-          <NavLink to="/" className="navbar-logo" aria-label="Home">
-            <img src={logo} alt="Logo" className="navbar-logo-image" />
+          <NavLink to="/" className="navbar-logo">
+            <img src={logo} alt="Logo" />
           </NavLink>
         </div>
 
-        <div className="navbar-center">
+        {/* UNE SEULE DIV POUR LES BOUTONS */}
+        <div className="navbar-actions">
+
           <NavLink
             to="/"
             end
-            className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}
+            className={({ isActive }) =>
+              `nav-link${isActive ? ' active' : ''}`
+            }
           >
             Home
           </NavLink>
+
           <NavLink
             to="/collection"
-            className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}
+            className={({ isActive }) =>
+              `nav-link${isActive ? ' active' : ''}`
+            }
           >
             Collection
           </NavLink>
-        </div>
 
-        <div className="navbar-right">
           <NavLink to="/add-fossil" className="add-fossil-button">
-            <span className="material-symbols-outlined" aria-hidden="true">
-              add
-            </span>
+            <span className="material-symbols-outlined">add</span>
             <span>Add</span>
           </NavLink>
+
           <button
-            type="button"
             className="profile-toggle"
             onClick={toggleMenu}
-            aria-expanded={isOpen}
-            aria-controls={user ? 'profile-popover' : 'login-modal'}
           >
-            <span className="material-symbols-outlined">account_circle</span>
+            <span className="material-symbols-outlined">
+              account_circle
+            </span>
           </button>
+
           {user ? (
             <ProfilePopover
               isOpen={isOpen}
@@ -87,7 +101,9 @@ export default function Navbar() {
               onSuccess={loadUser}
             />
           )}
+
         </div>
+
       </div>
     </nav>
   );

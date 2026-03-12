@@ -350,6 +350,40 @@ a:visited {
   color: #667085;
 }
 
+.scroll-cue {
+  position: fixed;
+  left: 50%;
+  bottom: 1.5rem;
+  transform: translateX(-50%);
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: rgba(17, 24, 39, 0.65);
+  border: 0.0625em solid rgba(230, 214, 183, 0.35);
+  box-shadow: 0 0.6em 1.2em rgba(8, 13, 26, 0.25);
+  animation: scroll-cue-bounce 1.8s ease-in-out infinite;
+  z-index: 900;
+}
+
+.scroll-cue .material-symbols-outlined {
+  color: #f2e6cf;
+  font-size: 1.6rem;
+}
+
+@keyframes scroll-cue-bounce {
+  0%,
+  100% {
+    transform: translate(-50%, 0);
+    opacity: 0.9;
+  }
+  50% {
+    transform: translate(-50%, -0.35rem);
+    opacity: 1;
+  }
+}
+
 
 .add-fossil-page {
   min-height: calc(100vh - 7rem);
