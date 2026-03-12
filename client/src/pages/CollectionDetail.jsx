@@ -23,6 +23,7 @@ const mapFossil = (fossil) => {
     const sizeCm = Number(criteria.size_cm ?? fossil?.size_cm ?? 0);
     const ageMyo = Number(criteria.age_myo ?? fossil?.age_myo ?? 0);
     const preservation = Number(criteria.preservation ?? fossil?.preservation ?? 0);
+    const continent = criteria.continent ?? fossil?.continent ?? fossil?.geological_area ?? 'Unknown';
     const imagePath = fossil?.image_url || fossil?.image_path;
 
     return {
@@ -31,9 +32,9 @@ const mapFossil = (fossil) => {
         description: fossil?.description ?? 'No description',
         image: resolveImageUrl(imagePath),
         sizeLabel: Number.isFinite(sizeCm) && sizeCm > 0 ? `${sizeCm} cm` : 'Unknown',
-        ageLabel: Number.isFinite(ageMyo) && ageMyo > 0 ? `${ageMyo} MYO` : 'Unknown',
-        preservationLabel:
-            Number.isFinite(preservation) && preservation > 0 ? `${preservation}/5` : 'Unknown',
+        dateFound: Number.isFinite(ageMyo) && ageMyo > 0 ? `${ageMyo} MYO` : 'Unknown',
+        location: continent || 'Unknown',
+        preservation: Number.isFinite(preservation) ? preservation : 0,
         era,
     };
 };
@@ -80,17 +81,7 @@ export default function CollectionDetail() {
 
             <div className="collection-grid">
                 {fossils.map((fossil) => (
-                    <FossilCard
-                        key={fossil.id}
-                        fossil={fossil}
-                        onMoreClick={openFossilDetails}
-                        meta={[
-                            { icon: 'straighten', label: 'Size :', value: fossil.sizeLabel },
-                            { icon: 'hourglass_top', label: 'Age :', value: fossil.ageLabel },
-                            { icon: 'star', label: 'Preservation :', value: fossil.preservationLabel },
-                            { icon: 'layers', label: 'Era :', value: fossil.era },
-                        ]}
-                    />
+                    <FossilCard key={fossil.id} fossil={fossil} onMoreClick={openFossilDetails} />
                 ))}
             </div>
         </div>
