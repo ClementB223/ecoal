@@ -181,6 +181,14 @@
  .navbar-right {
    display: contents;
  }
+
+ .navbar-center {
+   background: none !important;
+   border: none !important;
+   border-radius: 0 !important;
+   box-shadow: none !important;
+   padding: 0 !important;
+ }
   /* boutons du dock */
   .nav-link,
   .nav-link.active,
