@@ -25,6 +25,7 @@ export default function AddFossils() {
   const [sizeCm, setSizeCm] = useState('8');
   const [ageMyo, setAgeMyo] = useState('100');
   const [continent, setContinent] = useState('Europe');
+  const [preservation, setPreservation] = useState('3');
   const [imageFile, setImageFile] = useState(null);
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -52,10 +53,10 @@ export default function AddFossils() {
       dateFound: ageMyo ? `${ageMyo} MYO` : 'Unknown',
       location: continent,
       era: geologicalEra || 'Unknown',
-      preservation: 3,
+      preservation: Number(preservation),
       image: previewUrl || `${API_BASE_URL}/uploads/fossil-default.svg`,
     }),
-    [ageMyo, continent, description, geologicalEra, name, previewUrl, sizeCm],
+    [ageMyo, continent, description, geologicalEra, name, preservation, previewUrl, sizeCm],
   );
 
   useEffect(() => {
@@ -94,6 +95,17 @@ export default function AddFossils() {
     }
   };
 
+  const handlePreservationChange = (rawValue) => {
+    const parsed = Number.parseInt(rawValue, 10);
+    if (Number.isNaN(parsed)) {
+      setPreservation('0');
+      return;
+    }
+
+    const clamped = Math.max(0, Math.min(5, parsed));
+    setPreservation(String(clamped));
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError('');
@@ -107,7 +119,7 @@ export default function AddFossils() {
       formData.append('geological_era', geologicalEra);
       formData.append('size_cm', String(sizeCm || 0));
       formData.append('age_myo', String(ageMyo || 0));
-      formData.append('preservation', '3');
+      formData.append('preservation', String(preservation || 0));
       formData.append('continent', continent);
       formData.append('is_public', '1');
       if (imageFile) {
@@ -202,17 +214,33 @@ export default function AddFossils() {
                 ))}
               </div>
 
-              <label className="add-fossil-field add-fossil-field--continent">
-                <span>Continent</span>
-                <select value={continent} onChange={(event) => setContinent(event.target.value)}>
-                  <option value="Europe">Europe</option>
-                  <option value="Africa">Africa</option>
-                  <option value="Asia">Asia</option>
-                  <option value="North America">North America</option>
-                  <option value="South America">South America</option>
-                  <option value="Oceania">Oceania</option>
-                </select>
-              </label>
+              <div className="add-fossil-side-fields">
+                <label className="add-fossil-field add-fossil-field--continent">
+                  <span>Continent</span>
+                  <select value={continent} onChange={(event) => setContinent(event.target.value)}>
+                    <option value="Europe">Europe</option>
+                    <option value="Africa">Africa</option>
+                    <option value="Asia">Asia</option>
+                    <option value="North America">North America</option>
+                    <option value="South America">South America</option>
+                    <option value="Oceania">Oceania</option>
+                  </select>
+                </label>
+
+                <label className="add-fossil-field add-fossil-field--preservation">
+                  <span>Preservation (0-5)</span>
+                  <input
+                    type="number"
+                    min="0"
+                    max="5"
+                    step="1"
+                    value={preservation}
+                    onChange={(event) => handlePreservationChange(event.target.value)}
+                    placeholder="3"
+                    required
+                  />
+                </label>
+              </div>
             </div>
           </div>
 

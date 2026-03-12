@@ -3,7 +3,7 @@
 export default function FossilCard({ fossil, onMoreClick }) {
   const eraLabel = fossil?.era || 'Unknown';
   const preservationLabel =
-    Number.isFinite(Number(fossil?.preservation)) && Number(fossil.preservation) > 0
+    Number.isFinite(Number(fossil?.preservation)) && Number(fossil.preservation) >= 0
       ? `${Number(fossil.preservation)}/5`
       : 'Unknown';
 

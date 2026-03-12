@@ -106,6 +106,21 @@
   min-height: 3.7rem;
 }
 
+.add-fossil-page .add-fossil-side-fields {
+  grid-column: 3;
+  display: grid;
+  gap: 0.75rem;
+  align-content: start;
+}
+
+.add-fossil-page .add-fossil-field--preservation {
+  align-self: start;
+}
+
+.add-fossil-page .add-fossil-field--preservation input {
+  min-height: 3.7rem;
+}
+
 .add-fossil-page .add-fossil-field--compact > span {
   font-family: 'Source Sans 3', 'Segoe UI', sans-serif;
   font-size: 1rem;
@@ -249,6 +264,10 @@
   }
 
   .add-fossil-page .add-fossil-field--continent {
+    grid-column: 1 / -1;
+  }
+
+  .add-fossil-page .add-fossil-side-fields {
     grid-column: 1 / -1;
   }
 }
