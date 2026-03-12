@@ -2,7 +2,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { Routes, Route, useLocation, useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import './App.css';
+import './styles/responsive/responsive.css';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import LoginModal from './pages/Login';
 import Register from './pages/Register';
 import AddFossils from './pages/AddFossils';
@@ -381,7 +383,6 @@ function HomePage() {
             <label>
               Sort by :
               <select value={sortBy} onChange={(event) => setSortBy(event.target.value)}>
-                <option value="rarity">Rarety</option>
                 <option value="name">Name</option>
                 <option value="size">Size</option>
                 <option value="oldest">Oldest</option>
@@ -552,7 +553,9 @@ export default function App() {
         <Route path="/collection" element={<Collections />} />
         <Route path="/collection/:id" element={<CollectionDetail />} />
         <Route path="/collection/me" element={<MyCollectionEdit />} />
+        <Route path="*" element={<div className="status-box">Page not found.</div>} />
       </Routes>
+      <Footer />
     </div>
   );
 }
