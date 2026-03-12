@@ -9,12 +9,12 @@ const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:800
   '',
 );
 
-const getEraAgeSettings = (eraName) => {
+const getEraDefaultAgeMyo = (eraName) => {
   const value = (eraName || '').toLowerCase();
-  if (value.includes('paleo')) return { min: 252, max: 541, defaultValue: 500 };
-  if (value.includes('meso')) return { min: 66, max: 252, defaultValue: 170 };
-  if (value.includes('ceno')) return { min: 0, max: 66, defaultValue: 20 };
-  return { min: 0, max: 600, defaultValue: 100 };
+  if (value.includes('paleo')) return 500;
+  if (value.includes('meso')) return 170;
+  if (value.includes('ceno')) return 20;
+  return 100;
 };
 
 export default function AddFossils() {
@@ -30,8 +30,7 @@ export default function AddFossils() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
-  const ageSettings = useMemo(() => getEraAgeSettings(geologicalEra), [geologicalEra]);
-  const estimatedAgeMyo = ageSettings.defaultValue;
+  const estimatedAgeMyo = useMemo(() => getEraDefaultAgeMyo(geologicalEra), [geologicalEra]);
 
   const previewUrl = useMemo(() => {
     if (!imageFile) return '';
@@ -52,9 +51,11 @@ export default function AddFossils() {
       sizeLabel: sizeCm ? `${sizeCm} cm` : 'Unknown',
       dateFound: ageMyo ? `${ageMyo} MYO` : 'Unknown',
       location: continent,
+      era: geologicalEra || 'Unknown',
+      preservation: 3,
       image: previewUrl || `${API_BASE_URL}/uploads/fossil-default.svg`,
     }),
-    [ageMyo, continent, description, name, previewUrl, sizeCm],
+    [ageMyo, continent, description, geologicalEra, name, previewUrl, sizeCm],
   );
 
   useEffect(() => {
@@ -66,12 +67,12 @@ export default function AddFossils() {
         if (list.length > 0) {
           const firstEraName = list[0]?.name || '';
           setGeologicalEra((current) => current || firstEraName);
-          setAgeMyo((current) => current || String(getEraAgeSettings(firstEraName).defaultValue));
+          setAgeMyo((current) => current || String(getEraDefaultAgeMyo(firstEraName)));
         }
       } catch {
         setGeologicalEras([]);
         setGeologicalEra((current) => current || 'Paleozoic');
-        setAgeMyo((current) => current || String(getEraAgeSettings('Paleozoic').defaultValue));
+        setAgeMyo((current) => current || String(getEraDefaultAgeMyo('Paleozoic')));
       }
     };
 
@@ -173,13 +174,10 @@ export default function AddFossils() {
                   <div className="add-fossil-inline-unit">
                     <input
                       type="number"
-                      min={ageSettings.min}
-                      max={ageSettings.max}
                       step="0.1"
                       value={ageMyo}
                       onChange={(event) => setAgeMyo(event.target.value)}
                       placeholder={String(estimatedAgeMyo)}
-                      title={`Expected range for ${geologicalEra || 'selected era'}: ${ageSettings.min} to ${ageSettings.max} MYO`}
                       required
                     />
                     <span className="add-fossil-unit">MYO</span>
@@ -196,7 +194,7 @@ export default function AddFossils() {
                       checked={geologicalEra === era}
                       onChange={() => {
                         setGeologicalEra(era);
-                        setAgeMyo(String(getEraAgeSettings(era).defaultValue));
+                        setAgeMyo(String(getEraDefaultAgeMyo(era)));
                       }}
                     />
                     <span>{era}</span>

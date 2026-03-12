@@ -1,6 +1,12 @@
 ﻿import './FossilCard.css';
 
 export default function FossilCard({ fossil, onMoreClick }) {
+  const eraLabel = fossil?.era || 'Unknown';
+  const preservationLabel =
+    Number.isFinite(Number(fossil?.preservation)) && Number(fossil.preservation) > 0
+      ? `${Number(fossil.preservation)}/5`
+      : 'Unknown';
+
   const handleMoreClick = () => {
     if (onMoreClick) {
       onMoreClick(fossil);
@@ -40,6 +46,18 @@ export default function FossilCard({ fossil, onMoreClick }) {
               public
             </span>
             <span>Continent {fossil.location}</span>
+          </li>
+          <li>
+            <span className="material-symbols-outlined fossil-icon" aria-hidden="true">
+              layers
+            </span>
+            <span>Era {eraLabel}</span>
+          </li>
+          <li>
+            <span className="material-symbols-outlined fossil-icon" aria-hidden="true">
+              grade
+            </span>
+            <span>Preservation {preservationLabel}</span>
           </li>
         </ul>
       </div>
