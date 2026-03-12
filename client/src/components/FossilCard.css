@@ -1,15 +1,18 @@
-﻿.fossil-card {
+.fossil-card {
   overflow: hidden;
-  border-radius: 0 0 0.3em 0.3em;
-  border: 0.125em solid #0f1a31;
-  background: linear-gradient(180deg, #ece5d7 0%, #e3ddcf 100%);
-  box-shadow: 0 0.625em 1.25em rgba(8, 13, 26, 0.35);
+  border-radius: 0.9em;
+  border: 0.125em solid rgba(13, 21, 39, 0.45);
+  background: var(--paper-texture,
+      radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.35) 0%, transparent 35%),
+      radial-gradient(circle at 80% 70%, rgba(145, 152, 167, 0.2) 0%, transparent 40%),
+      linear-gradient(180deg, #eee8da 0%, #e6dfcf 100%));
+  box-shadow: 0 0.6em 1.2em rgba(8, 13, 26, 0.25);
 }
 
 .fossil-card-media {
   position: relative;
   aspect-ratio: 4 / 2.55;
-  border-bottom: 0.125em solid #0f1a31;
+  border-bottom: 0.125em solid rgba(13, 21, 39, 0.35);
 }
 
 .fossil-card-image {
@@ -26,7 +29,6 @@
   border: 0;
   border-radius: 999em;
   background: var(--bg-panel);
-  ;
   color: #ffffff;
   font-size: 0.87rem;
   font-weight: 700;
@@ -36,7 +38,7 @@
 
 .fossil-card-body {
   padding: 0.75em 0.6875em 0.6875em;
-  color: #111217;
+  color: #1a2238;
 }
 
 .fossil-card-body h3 {
@@ -59,7 +61,7 @@
 
 .fossil-card-rule {
   margin-top: 0.5em;
-  border-top: 0.125em solid #0f1a31;
+  border-top: 0.125em solid rgba(13, 21, 39, 0.3);
 }
 
 .fossil-card-meta {
@@ -69,6 +71,7 @@
   display: grid;
   gap: 0.2em;
   font-size: 0.95rem;
+  color: #2b3446;
 }
 
 .fossil-card-meta li {

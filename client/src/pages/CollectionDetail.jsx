@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import FossilCard from '../components/FossilCard';
 import '../App.css';
@@ -40,6 +40,7 @@ const mapFossil = (fossil) => {
 
 export default function CollectionDetail() {
     const { id } = useParams();
+    const navigate = useNavigate();
     const [collection, setCollection] = useState(null);
     const [fossils, setFossils] = useState([]);
     const [error, setError] = useState('');
@@ -64,6 +65,10 @@ export default function CollectionDetail() {
         loadDetail();
     }, [id]);
 
+    const openFossilDetails = (fossil) => {
+        navigate(`/fossils/${fossil.id}`);
+    };
+
     return (
         <div className="collection-page">
             <div className="collection-header">
@@ -78,11 +83,12 @@ export default function CollectionDetail() {
                     <FossilCard
                         key={fossil.id}
                         fossil={fossil}
+                        onMoreClick={openFossilDetails}
                         meta={[
-                            { icon: 'straighten', label: 'Size', value: fossil.size },
-                            { icon: 'hourglass_top', label: 'Age', value: fossil.ageLabel },
-                            { icon: 'star', label: 'Preservation', value: fossil.preservationLabel },
-                            { icon: 'layers', label: 'Era', value: fossil.era },
+                            { icon: 'straighten', label: 'Size :', value: fossil.sizeLabel },
+                            { icon: 'hourglass_top', label: 'Age :', value: fossil.ageLabel },
+                            { icon: 'star', label: 'Preservation :', value: fossil.preservationLabel },
+                            { icon: 'layers', label: 'Era :', value: fossil.era },
                         ]}
                     />
                 ))}
